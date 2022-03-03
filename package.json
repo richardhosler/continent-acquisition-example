@@ -1,0 +1,10 @@
+{
+  "name": "country-aquisitions-example",
+  "private": true,
+  "scripts": {
+    "start": "npx lerna run dev --stream --parallel"
+  },
+  "devDependencies": {
+    "lerna": "^4.0.0"
+  }
+}

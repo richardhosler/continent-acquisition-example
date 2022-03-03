@@ -1,0 +1,15 @@
+0 silly argv {
+0 silly argv   _: [ 'clean' ],
+0 silly argv   lernaVersion: '4.0.0',
+0 silly argv   '$0': '..\\..\\..\\AppData\\Local\\npm-cache\\_npx\\d5cad42883f80c04\\node_modules\\lerna\\cli.js'
+0 silly argv }
+1 notice cli v4.0.0
+2 verbose rootPath C:\Users\rowla\Documents\Richy\country-aquisition-example
+3 info Removing the following directories:
+4 info clean packages\app\node_modules
+5 info clean removing C:\Users\rowla\Documents\Richy\country-aquisition-example\packages\app\node_modules
+6 silly rimrafDir C:\Users\rowla\Documents\Richy\country-aquisition-example\packages\app\node_modules
+7 error Error: Command failed with exit code 1: C:\Program Files\nodejs\node.exe C:\Users\rowla\AppData\Local\npm-cache\_npx\d5cad42883f80c04\node_modules\rimraf\bin.js --no-glob C:\Users\rowla\Documents\Richy\country-aquisition-example\packages\app\node_modules\
+7 error     at makeError (C:\Users\rowla\AppData\Local\npm-cache\_npx\d5cad42883f80c04\node_modules\execa\lib\error.js:60:11)
+7 error     at handlePromise (C:\Users\rowla\AppData\Local\npm-cache\_npx\d5cad42883f80c04\node_modules\execa\index.js:118:26)
+7 error     at processTicksAndRejections (node:internal/process/task_queues:96:5)
