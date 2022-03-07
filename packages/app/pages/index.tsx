@@ -1,8 +1,11 @@
+import React, { useState } from "react";
+import ReactDOM from "react-dom";
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import styles from '../styles/Home.module.css'
 import { ThirdwebWeb3Provider, useWeb3 } from "@3rdweb/hooks";
 import "regenerator-runtime/runtime";
+import MapChart from "./scripts/map-chart";
 
 const Home: NextPage = () => {
 
@@ -11,6 +14,7 @@ const Home: NextPage = () => {
   error ? console.log(error) : null;
   // Import web3 lib
   // Observe/watch for connect/login
+  const [content, setContent] = useState("");
 
 
   return (
@@ -29,9 +33,14 @@ const Home: NextPage = () => {
           </button>
         )}
       </div>
+      <div id="root" className="flex">
+        <MapChart setTooltipContent={setContent} />
+
+      </div>
     </div>
   );
-
+  const rootElement = document.getElementById("root");
+  ReactDOM.render(<Home />, rootElement);
 }
 
 export default Home
