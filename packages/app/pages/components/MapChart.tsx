@@ -8,6 +8,7 @@ import {
 
 const geoUrl = "https://raw.githubusercontent.com/zcreativelabs/react-simple-maps/master/topojson-maps/world-110m.json";
 const MapChart = () => {
+
     return (
         <ComposableMap data-tip="" projectionConfig={{ scale: 200 }}>
             <Geographies geography={geoUrl}>
@@ -32,6 +33,7 @@ const MapChart = () => {
                             }}
                             onClick={() => {
                                 const iso = geo.properties.ISO_A3;
+                                console.log(iso)
                             }}
                         />
                     ))

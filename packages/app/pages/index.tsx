@@ -4,7 +4,7 @@ import type { NextPage } from 'next'
 // import styles from '../styles/Home.module.css'
 import { ThirdwebWeb3Provider, useWeb3 } from "@3rdweb/hooks";
 import "regenerator-runtime/runtime";
-import MapChart from "./scripts/map-chart";
+import MapChart from "./components/MapChart";
 
 const Home: NextPage = () => {
 
