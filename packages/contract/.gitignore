@@ -5,7 +5,7 @@ coverage.json
 typechain
 build
 typechain-types
-
+lerna-debug.log
 #Hardhat files
 cache
 artifacts
