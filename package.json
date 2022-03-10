@@ -2,7 +2,8 @@
   "name": "country-aquisitions-example",
   "private": true,
   "scripts": {
-    "start": "npx lerna run dev --stream --parallel"
+    "start": "npx lerna run dev --stream --parallel",
+    "bootstrap": "npx lerna bootstrap"
   },
   "devDependencies": {
     "lerna": "^4.0.0"
