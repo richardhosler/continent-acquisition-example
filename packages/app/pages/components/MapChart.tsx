@@ -6,7 +6,7 @@ import {
     Geography
 } from "react-simple-maps";
 
-const geoUrl = "https://raw.githubusercontent.com/zcreativelabs/react-simple-maps/master/topojson-maps/world-110m.json";
+const geoUrl = "../assets/world-110m.json";
 const MapChart = () => {
 
     return (

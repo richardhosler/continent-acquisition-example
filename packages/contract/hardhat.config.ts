@@ -4,6 +4,7 @@ import { HardhatUserConfig, task } from "hardhat/config";
 import "@nomiclabs/hardhat-waffle";
 import "@typechain/hardhat";
 
+import "hardhat-gas-reporter"
 dotenv.config();
 
 // This is a sample Hardhat task. To learn how to create your own go to
@@ -21,7 +22,11 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
 
 const config: HardhatUserConfig = {
   solidity: "0.8.10",
+  gasReporter: { onlyCalledMethods: false },
   networks: {
+    hardhat: {
+      blockGasLimit: 3000000000000
+    },
     ropsten: {
       url: process.env.ROPSTEN_URL || "",
       accounts:
