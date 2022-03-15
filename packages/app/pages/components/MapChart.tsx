@@ -1,4 +1,5 @@
 import React, { memo } from "react";
+import mapData from "../../assets/world-110m.json"
 import {
     ZoomableGroup,
     ComposableMap,
@@ -6,12 +7,10 @@ import {
     Geography
 } from "react-simple-maps";
 
-const geoUrl = "../assets/world-110m.json";
 const MapChart = () => {
-
     return (
         <ComposableMap data-tip="" projectionConfig={{ scale: 200 }}>
-            <Geographies geography={geoUrl}>
+            <Geographies geography={mapData}>
                 {({ geographies }) =>
                     geographies.map(geo => (
                         <Geography
@@ -32,8 +31,7 @@ const MapChart = () => {
                                 }
                             }}
                             onClick={() => {
-                                const iso = geo.properties.ISO_A3;
-                                console.log(iso)
+
                             }}
                         />
                     ))

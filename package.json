@@ -8,5 +8,6 @@
   "devDependencies": {
     "lerna": "^4.0.0"
   },
-  "workspaces": ["packages/*"]
+  "workspaces": ["packages/*"],
+  "license": "GPL-3.0-or-later"
 }
