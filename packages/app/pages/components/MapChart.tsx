@@ -7,7 +7,7 @@ import {
     Geography
 } from "react-simple-maps";
 
-const MapChart = () => {
+const MapChart = ({ setTooltipContent }: { setTooltipContent: any }) => {
     return (
         <ComposableMap data-tip="" projectionConfig={{ scale: 200 }}>
             <Geographies geography={mapData}>
@@ -30,8 +30,12 @@ const MapChart = () => {
                                     outline: "none"
                                 }
                             }}
-                            onClick={() => {
-
+                            onMouseEnter={() => {
+                                const { continent } = geo.properties;
+                                setTooltipContent(`some content on ${continent}`);
+                            }}
+                            onMouseLeave={() => {
+                                setTooltipContent("");
                             }}
                         />
                     ))
