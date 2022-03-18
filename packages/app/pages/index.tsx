@@ -3,8 +3,9 @@ import ReactTooltip from "react-tooltip";
 import type { NextPage } from 'next'
 import "regenerator-runtime/runtime";
 import MapChart from "./components/MapChart";
-import { useAccount, useBalance, useConnect, useContract, useNetwork } from "wagmi";
+import { useAccount, useBalance, useConnect, useContract, useNetwork, useProvider } from "wagmi";
 import continentToken from "../../contract/build/ContinentToken.json"
+import { Signer } from "ethers";
 
 const Home: NextPage = () => {
   const [content, setContent] = useState("");
@@ -12,25 +13,27 @@ const Home: NextPage = () => {
   const [{ data: networkData, error: networkError, loading: networkLoading }, switchNetwork] = useNetwork()
   const [{ data: accountData, error: accountError, loading: accountLoading }, disconnect] = useAccount({ fetchEns: true });
   const [{ data: balanceData, error: balanceError, loading: balanceLoading }] = useBalance({ addressOrName: accountData?.address });
-  const contract = useContract({ addressOrName: "0x5FbDB2315678afecb367f032d93F642f64180aa3", contractInterface: continentToken.abi })
-  // console.log(contract.allContinentsStatus());
+  const provider = useProvider();
+  const contract = useContract({ addressOrName: "0x5FbDB2315678afecb367f032d93F642f64180aa3", contractInterface: continentToken.abi, signerOrProvider: provider })
+  console.log(contract?.allContinentsStatus());
 
   return accountLoading || networkLoading || balanceLoading ? <>Loading...</> : (
     <div className="flex flex-col items-center justify-center min-h-screen py-2 bg-slate-100">
       <div className="absolute top-10 right-10">
-        {data.connectors.map((connector) => {
-          return (
-            <button
-              {...!connector.ready && 'disabled'}
-              key={connector.id}
-              onClick={() => connect(connector)}
-            >
-              {connector.name}
-              {!connector.ready && ' (unsupported)'}
-            </button>
-          )
-        })}
-        {accountData?.address}
+        {accountData?.address == null ?
+          data.connectors.map((connector) => {
+            return (
+              <button
+                {...!connector.ready && 'disabled'}
+                key={connector.id}
+                onClick={() => connect(connector)}
+              >
+                {connector.name}
+                {!connector.ready && ' (unsupported)'}
+              </button>
+            )
+          }) : <button onClick={() => disconnect()}>Disconnect</button>
+        }
         {error && <div>{error?.message ?? 'Failed to connect'}</div>}
       </div>
       <div>

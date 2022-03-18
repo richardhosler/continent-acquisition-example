@@ -22,10 +22,10 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
 
 const config: HardhatUserConfig = {
   solidity: "0.8.10",
-  gasReporter: { onlyCalledMethods: false },
   networks: {
     hardhat: {
-      blockGasLimit: 3000000000000
+      blockGasLimit: 3000000000000,
+      chainId: 31337
     },
     ropsten: {
       url: process.env.ROPSTEN_URL || "",
