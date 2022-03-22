@@ -33,7 +33,6 @@ type GetProviderArgs = {
   connector?: Connector;
 }
 const provider = ({ chainId, connector }: GetProviderArgs) => {
-  console.log('getting provider', chainId)
   if (chainId == 31337) {
     const chain = connector?.chains.find(x => x.id == 31337)?.rpcUrls[0]
     return new providers.JsonRpcProvider(chain)

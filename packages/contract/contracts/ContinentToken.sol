@@ -57,4 +57,7 @@ contract ContinentToken is ERC721 {
         _continents[UID].owner = to;
         _safeTransfer(from, to, UID, "");
     }
+    function getCurrentPrice() public view returns(uint256 amount){
+        return _currentPrice;
+    }
 }
