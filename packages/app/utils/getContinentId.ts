@@ -1,18 +1,27 @@
-export const getContinentId = (continentName: string): number | undefined => {
+export const getContinentId = (continentName: string): number => {
     switch (continentName) {
         case "Africa":
+        case "AF":
             return 0;
         case "Antarctica":
-            return 1;
+        case "AN":
+            return 6;
         case "Asia":
-            return 2;
+        case "AS":
+            return 1;
         case "Europe":
-            return 3;
+        case "EU":
+            return 2;
         case "North America":
-            return 4;
+        case "NA":
+            return 3;
         case "Oceania":
+        case "OC":
             return 5;
         case "South America":
-            return 6;
+        case "SA":
+            return 4;
+        default:
+            return -1;
     }
 }
