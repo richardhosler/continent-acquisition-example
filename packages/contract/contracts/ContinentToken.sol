@@ -56,10 +56,10 @@ contract ContinentToken is ERC721 {
         return _currentPrice;
     }
     function strCompare(string memory a, string memory b) internal pure returns (bool) {
-    if(bytes(a).length != bytes(b).length) {
-        return false;
-    } else {
-        return keccak256(abi.encode(a)) == keccak256(abi.encode(b));
+        if(bytes(a).length != bytes(b).length) {
+            return false;
+        } else {
+            return keccak256(abi.encode(a)) == keccak256(abi.encode(b));
+        }
     }
-}
 }

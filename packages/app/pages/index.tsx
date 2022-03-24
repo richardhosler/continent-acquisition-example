@@ -72,7 +72,7 @@ const Home: NextPage = () => {
 
 
       {error && <div>{error?.message}</div>}
-      <div className="flex flex-col columns-3">
+      <div className="flex">
         {data.connected && contractData && <MapChart onTooltipChange={handleContentChange} onContractChange={readContinents} contractData={contractData} accountData={accountData} readContractData={readContinents} />}
         {renderReady && <ReactTooltip>{content}</ReactTooltip>}
       </div>

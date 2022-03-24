@@ -1,25 +1,31 @@
 import React, { Dispatch, memo, SetStateAction, useEffect, useState } from "react";
 import Modal from "react-modal";
 import mapData from "../assets/world-110m.json"
-import {
-    ComposableMap,
-    Geographies,
-    Geography
-} from "react-simple-maps";
+import { ComposableMap, Geographies, Geography } from "react-simple-maps";
 import continentToken from "../../contract/build/ContinentToken.json"
-
 import { Result } from "ethers/lib/utils";
 import { useContractRead, useContractWrite, useProvider, useWaitForTransaction } from "wagmi";
-
 import { getContinentId } from "../utils/getContinentId"
-import { format } from "path";
-
+import { Formik, Field, Form, FormikHelpers } from "formik";
+import { z } from "zod";
+import { object, string, number, date, InferType } from 'yup';
+import isEthereumAddress from "validator";
+const stringToByteArray = (s: string) => {
+    var result = new Uint8Array(s.length);
+    for (var i = 0; i < s.length; i++) {
+        result[i] = s.charCodeAt(i);
+    }
+    return result;
+}
 interface MapChartInterface {
     onTooltipChange: (content: string) => void,
     contractData: Result,
     accountData: any,
     readContractData: any,
     onContractChange: () => void
+}
+interface Values {
+    address: string;
 }
 
 const MapChart = ({ contractData, onTooltipChange, accountData, readContractData, onContractChange }: MapChartInterface) => {
@@ -32,15 +38,12 @@ const MapChart = ({ contractData, onTooltipChange, accountData, readContractData
     const [continentSelected, setContinent] = useState("");
     const [{ data: transactionData, error: transactionError, loading: transactionLoading }, wait] = useWaitForTransaction({ skip: true });
     const [inputAddress, setInputAddress] = useState("");
+    const regex = new RegExp(`/^${accountData.address}/`);
+    const schema = object({
+        address: string().trim().matches(/^0x[0-9a-f]{40}$/i, "Invalid Etherium address.").test("isYours", "You already own this.", value => value !== accountData.address).required(),
+    });
     const getOwnerAddress = (ISO: string): string | null => {
         return getContinentId(ISO) != -1 ? contractData[getContinentId(ISO)][1] : null;
-    }
-    function stringToByteArray(s: string) {
-        var result = new Uint8Array(s.length);
-        for (var i = 0; i < s.length; i++) {
-            result[i] = s.charCodeAt(i);
-        }
-        return result;
     }
     const callAcquireContinent = (ISO: string, price: Result | undefined) => {
         acquireContractCall({ args: stringToByteArray(ISO), overrides: { from: accountData.address, value: price } });
@@ -54,11 +57,31 @@ const MapChart = ({ contractData, onTooltipChange, accountData, readContractData
     }
     useEffect(() => {
         onContractChange;
-    }, [wait, onContractChange])
-
+    }, [transactionData, onContractChange])
+    const getContinentColour = (ISO: string, hover: boolean) => {
+        if (hover) {
+            switch (getOwnerAddress(ISO)) {
+                case accountData.address:
+                    return "#EFEFFF"
+                case "0x0000000000000000000000000000000000000000":
+                    return "#EFFFEF"
+                default:
+                    return "#EEEFEF"
+            }
+        } else {
+            switch (getOwnerAddress(ISO)) {
+                case accountData.address:
+                    return "#EEEEAF"
+                case "0x0000000000000000000000000000000000000000":
+                    return "#AFEEAF"
+                default:
+                    return "#EEAFAF"
+            }
+        }
+    }
     Modal.setAppElement('#__next');
     return (
-        <ComposableMap data-tip="" projectionConfig={{ scale: 200 }}>
+        <ComposableMap data-tip="" projectionConfig={{ scale: 180 }}>
             <Geographies geography={mapData}>
                 {({ geographies }) =>
                     geographies.map(geo => (
@@ -67,10 +90,11 @@ const MapChart = ({ contractData, onTooltipChange, accountData, readContractData
                             geography={geo}
                             style={{
                                 default: {
-                                    fill: getOwnerAddress(geo.properties.ISO) == "0x0000000000000000000000000000000000000000" ? "#A2EEA2" : "#EEA2A2", outline: "none"
+                                    fill: getContinentColour(geo.properties.ISO, false),
+                                    outline: "none"
                                 },
                                 hover: {
-                                    fill: getOwnerAddress(geo.properties.ISO) == "0x0000000000000000000000000000000000000000" ? "#D2FED2" : "#FED2D2",
+                                    fill: getContinentColour(geo.properties.ISO, true),
                                     outline: "#0F0F0F"
                                 },
                                 pressed: {
@@ -105,8 +129,35 @@ const MapChart = ({ contractData, onTooltipChange, accountData, readContractData
                 <p>Price: {priceData?.toString()} gwei</p>
                 {getOwnerAddress(continentSelected) != accountData.address ?
                     <button onClick={async () => callAcquireContinent(continentSelected, await priceData)}>Purchase</button> :
-                    <><button onClick={() => callRelinquishContinent(continentSelected)}>Relinquish</button>
-                        <div><input value={inputAddress} onChange={({ target }) => setInputAddress(target.value)} /><button onClick={() => callTransferContinent(accountData.address, inputAddress, continentSelected)}>Transfer</button></div></>}
+                    <>
+                        <button onClick={() => callRelinquishContinent(continentSelected)}>Relinquish</button>
+                        <Formik
+                            initialValues={{
+                                address: "",
+                            }}
+                            onSubmit={(
+                                values: Values,
+                                { setSubmitting }: FormikHelpers<Values>
+                            ) => {
+                                setTimeout(() => {
+                                    callTransferContinent(accountData.address, values.address, continentSelected);
+                                    setSubmitting(false);
+                                }, 500);
+                            }}
+                            validationSchema={schema}
+                        >
+                            {props => {
+                                console.log(props);
+
+                                return (
+                                    <Form>
+                                        <Field id="address" name="address" placeholder="" />
+                                        {props.errors.address && props.errors.address}
+                                        <button type="submit" disabled={!(props.isValid && props.dirty)}>Transfer</button>
+                                    </Form>)
+                            }}
+                        </Formik>
+                    </>}
             </Modal>
         </ComposableMap >
     );
