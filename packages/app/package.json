@@ -10,6 +10,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@davatar/react": "^1.9.0",
+    "@types/react-blockies": "^1.4.1",
     "@types/react-modal": "^3.13.1",
     "@types/validator": "^13.7.1",
     "contract": "^0.1.1",
@@ -21,6 +23,7 @@
     "react-modal": "^3.14.4",
     "react-scripts": "^5.0.0",
     "react-simple-maps": "^2.3.0",
+    "react-toast-notifications": "^2.5.1",
     "react-tooltip": "^4.2.21",
     "validator": "^13.7.0",
     "wagmi": "^0.2.21",
@@ -29,11 +32,13 @@
   },
   "devDependencies": {
     "@3rdweb/hooks": "^1.9.2",
+    "@types/classnames": "^2.3.1",
     "@types/node": "17.0.21",
     "@types/react": "^17.0.40",
     "@types/react-dom": "^17.0.13",
     "@types/react-simple-maps": "^1.0.8",
     "autoprefixer": "^10.4.2",
+    "classnames": "^2.3.1",
     "eslint": "8.10.0",
     "eslint-config-next": "12.1.0",
     "postcss": "^8.4.7",

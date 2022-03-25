@@ -10,6 +10,7 @@ import { Formik, Field, Form, FormikHelpers } from "formik";
 import { z } from "zod";
 import { object, string, number, date, InferType } from 'yup';
 import isEthereumAddress from "validator";
+import Button from "./Button";
 const stringToByteArray = (s: string) => {
     var result = new Uint8Array(s.length);
     for (var i = 0; i < s.length; i++) {
@@ -18,11 +19,11 @@ const stringToByteArray = (s: string) => {
     return result;
 }
 interface MapChartInterface {
-    onTooltipChange: (content: string) => void,
-    contractData: Result,
-    accountData: any,
-    readContractData: any,
-    onContractChange: () => void
+    onTooltipChange: (content: string) => void;
+    contractData: Result;
+    accountData: any;
+    readContractData: any;
+    onContractChange: () => void;
 }
 interface Values {
     address: string;
@@ -123,14 +124,14 @@ const MapChart = ({ contractData, onTooltipChange, accountData, readContractData
                 onRequestClose={() => setIsOpen(false)}
                 contentLabel="Modal"
             >
-                <button onClick={() => setIsOpen(false)}>close</button>
+                <Button onClick={() => setIsOpen(false)}>close</Button>
                 <h2>{continentSelected}</h2>
                 <p>Owner: {getOwnerAddress(continentSelected)}</p>
                 <p>Price: {priceData?.toString()} gwei</p>
                 {getOwnerAddress(continentSelected) != accountData.address ?
-                    <button onClick={async () => callAcquireContinent(continentSelected, await priceData)}>Purchase</button> :
+                    <Button onClick={async () => callAcquireContinent(continentSelected, await priceData)}>Purchase</Button> :
                     <>
-                        <button onClick={() => callRelinquishContinent(continentSelected)}>Relinquish</button>
+                        <Button onClick={() => callRelinquishContinent(continentSelected)}>Relinquish</Button>
                         <Formik
                             initialValues={{
                                 address: "",
@@ -153,7 +154,7 @@ const MapChart = ({ contractData, onTooltipChange, accountData, readContractData
                                     <Form>
                                         <Field id="address" name="address" placeholder="" />
                                         {props.errors.address && props.errors.address}
-                                        <button type="submit" disabled={!(props.isValid && props.dirty)}>Transfer</button>
+                                        <Button type="submit" disabled={!(props.isValid && props.dirty)}>Transfer</Button>
                                     </Form>)
                             }}
                         </Formik>

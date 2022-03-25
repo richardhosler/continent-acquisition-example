@@ -1,8 +1,11 @@
 import { providers } from 'ethers'
+import { ToastProvider } from 'react-toast-notifications'
 import { Provider as WalletProvider, chain, defaultChains, Connector } from 'wagmi'
 import { InjectedConnector } from 'wagmi/connectors/injected'
 import { WalletConnectConnector } from 'wagmi/connectors/walletConnect'
 import { WalletLinkConnector } from 'wagmi/connectors/walletLink'
+
+import '../styles/globals.css';
 
 // API key for Ethereum node
 // Two popular services are Infura (infura.io) and Alchemy (alchemy.com)
@@ -42,7 +45,9 @@ const provider = ({ chainId, connector }: GetProviderArgs) => {
 function MyApp({ Component, pageProps }: { Component: any, pageProps: any }) {
   return (
     <WalletProvider autoConnect connectors={connectors} provider={provider}>
-      <Component {...pageProps} />
+      <ToastProvider>
+        <Component {...pageProps} />
+      </ToastProvider>
     </WalletProvider>
   );
 }
