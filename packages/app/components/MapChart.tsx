@@ -1,5 +1,4 @@
-import React, { Dispatch, memo, SetStateAction, useEffect, useState } from "react";
-import Modal from "react-modal";
+import React, { memo, useEffect, useState } from "react";
 import mapData from "../assets/world-110m.json"
 import { ComposableMap, Geographies, Geography } from "react-simple-maps";
 import continentToken from "../../contract/build/ContinentToken.json"
@@ -7,17 +6,10 @@ import { Result } from "ethers/lib/utils";
 import { useContractRead, useContractWrite, useProvider, useWaitForTransaction } from "wagmi";
 import { getContinentId } from "../utils/getContinentId"
 import { Formik, Field, Form, FormikHelpers } from "formik";
-import { z } from "zod";
-import { object, string, number, date, InferType } from 'yup';
-import isEthereumAddress from "validator";
-import Button from "./Button";
-const stringToByteArray = (s: string) => {
-    var result = new Uint8Array(s.length);
-    for (var i = 0; i < s.length; i++) {
-        result[i] = s.charCodeAt(i);
-    }
-    return result;
-}
+import { object, string } from 'yup';
+import { Button } from "./Button";
+import { convertStringToByteArray } from "../utils/convertStringToByteArray"
+import { ContinentModal } from "./ContinentModal";
 interface MapChartInterface {
     onTooltipChange: (content: string) => void;
     contractData: Result;
@@ -32,9 +24,9 @@ interface Values {
 const MapChart = ({ contractData, onTooltipChange, accountData, readContractData, onContractChange }: MapChartInterface) => {
     const provider = useProvider();
     const [modalIsOpen, setIsOpen] = useState(false);
-    const [{ data: acquireContinentData, error: acquireContinentError, loading: acquireContinentLoading }, acquireContractCall] = useContractWrite({ addressOrName: "0x5FbDB2315678afecb367f032d93F642f64180aa3", contractInterface: continentToken.abi, signerOrProvider: provider }, "acquireContinent")
     const [{ data: relinquishContinentData, error: relinquishContinentError, loading: relinquishContinentLoading }, relinquishContinentCall] = useContractWrite({ addressOrName: "0x5FbDB2315678afecb367f032d93F642f64180aa3", contractInterface: continentToken.abi, signerOrProvider: provider }, "relinquishContinent")
     const [{ data: transferContinentData, error: transferContinentError, loading: transferContinentLoading }, transferContinentCall] = useContractWrite({ addressOrName: "0x5FbDB2315678afecb367f032d93F642f64180aa3", contractInterface: continentToken.abi, signerOrProvider: provider }, "transferContinent")
+    const [{ data: acquireContinentData, error: acquireContinentError, loading: acquireContinentLoading }, acquireContractCall] = useContractWrite({ addressOrName: "0x5FbDB2315678afecb367f032d93F642f64180aa3", contractInterface: continentToken.abi, signerOrProvider: provider }, "acquireContinent")
     const [{ data: priceData, error: priceError, loading: priceLoading }, readPrice] = useContractRead({ addressOrName: "0x5FbDB2315678afecb367f032d93F642f64180aa3", contractInterface: continentToken.abi, signerOrProvider: provider }, "getCurrentPrice", { skip: false });
     const [continentSelected, setContinent] = useState("");
     const [{ data: transactionData, error: transactionError, loading: transactionLoading }, wait] = useWaitForTransaction({ skip: true });
@@ -46,19 +38,31 @@ const MapChart = ({ contractData, onTooltipChange, accountData, readContractData
     const getOwnerAddress = (ISO: string): string | null => {
         return getContinentId(ISO) != -1 ? contractData[getContinentId(ISO)][1] : null;
     }
-    const callAcquireContinent = (ISO: string, price: Result | undefined) => {
-        acquireContractCall({ args: stringToByteArray(ISO), overrides: { from: accountData.address, value: price } });
-        wait({ wait: acquireContinentData?.wait });
+    const callAcquireContinent = async (ISO: string, price: Result | undefined) => {
+        const transaction = await acquireContractCall({
+            args: convertStringToByteArray({ s: ISO }), overrides: { from: accountData.address, value: price }
+        });
+        console.log({ transaction });
+        if (transaction.data?.hash) {
+            wait({ hash: transaction.data.hash });
+            console.log("transaction confirmed");
+
+        }
     }
+    console.log({ transactionData, transactionError, transactionLoading });
     const callRelinquishContinent = (ISO: string) => {
-        relinquishContinentCall({ args: stringToByteArray(ISO) })
+        relinquishContinentCall({ args: convertStringToByteArray({ s: ISO }) })
     }
     const callTransferContinent = (from: string, to: string, ISO: string) => {
-        transferContinentCall({ args: [from, to, stringToByteArray(ISO)] })
+        transferContinentCall({ args: [from, to, convertStringToByteArray({ s: ISO })] })
     }
+
     useEffect(() => {
-        onContractChange;
+        console.log("onContractChange fired");
+
+        if (transactionData) { onContractChange(); }
     }, [transactionData, onContractChange])
+
     const getContinentColour = (ISO: string, hover: boolean) => {
         if (hover) {
             switch (getOwnerAddress(ISO)) {
@@ -80,7 +84,6 @@ const MapChart = ({ contractData, onTooltipChange, accountData, readContractData
             }
         }
     }
-    Modal.setAppElement('#__next');
     return (
         <ComposableMap data-tip="" projectionConfig={{ scale: 180 }}>
             <Geographies geography={mapData}>
@@ -111,7 +114,7 @@ const MapChart = ({ contractData, onTooltipChange, accountData, readContractData
                             }}
                             onMouseDown={() => {
                                 setContinent(geo.properties.ISO);
-                                setIsOpen(true);
+                                // TODO: setIsOpen(true);
                             }}
 
                         />
@@ -119,11 +122,7 @@ const MapChart = ({ contractData, onTooltipChange, accountData, readContractData
                     ))
                 }
             </Geographies>
-            <Modal
-                isOpen={modalIsOpen}
-                onRequestClose={() => setIsOpen(false)}
-                contentLabel="Modal"
-            >
+            <ContinentModal>
                 <Button onClick={() => setIsOpen(false)}>close</Button>
                 <h2>{continentSelected}</h2>
                 <p>Owner: {getOwnerAddress(continentSelected)}</p>
@@ -159,7 +158,7 @@ const MapChart = ({ contractData, onTooltipChange, accountData, readContractData
                             }}
                         </Formik>
                     </>}
-            </Modal>
+            </ContinentModal>
         </ComposableMap >
     );
 };

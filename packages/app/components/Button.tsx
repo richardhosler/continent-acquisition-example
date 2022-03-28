@@ -1,6 +1,4 @@
-import { memo, MouseEventHandler } from "react";
-import classNames from "classnames"
-
+import { twMerge } from "tailwind-merge"
 interface ButtonInterface {
     onClick?: () => void;
     className?: string;
@@ -9,9 +7,8 @@ interface ButtonInterface {
     children: React.ReactNode;
 }
 
-const Button = ({ onClick, className, disabled, type, children }: ButtonInterface) => {
-    const buttonClasses = classNames("rounded-md px-3 pb-1 border-2 bg-slate-400", className)
-    console.log({ disabled });
+export const Button = ({ onClick, className, disabled, type, children }: ButtonInterface): (JSX.Element) => {
+    const buttonClasses = twMerge("rounded-md px-2 pb-1 border-2 bg-slate-200 place-items-center", className)
 
     return (
         <button className={buttonClasses} onClick={onClick} disabled={disabled}>
@@ -19,5 +16,3 @@ const Button = ({ onClick, className, disabled, type, children }: ButtonInterfac
         </button>
     )
 }
-
-export default memo(Button);
