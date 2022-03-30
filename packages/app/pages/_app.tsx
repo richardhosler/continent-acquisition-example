@@ -1,9 +1,11 @@
 import { providers } from 'ethers'
-import { ToastProvider } from 'react-toast-notifications'
+import { useEffect } from 'react'
+import { Toaster, ToastPosition } from 'react-hot-toast'
 import { Provider as WalletProvider, chain, defaultChains, Connector } from 'wagmi'
 import { InjectedConnector } from 'wagmi/connectors/injected'
 import { WalletConnectConnector } from 'wagmi/connectors/walletConnect'
-import { WalletLinkConnector } from 'wagmi/connectors/walletLink'
+import { Hydrate, QueryClient, QueryClientProvider, useQuery } from 'react-query';
+
 
 import '../styles/globals.css';
 
@@ -11,7 +13,7 @@ import '../styles/globals.css';
 // Two popular services are Infura (infura.io) and Alchemy (alchemy.com)
 const infuraId = process.env.INFURA_ID
 const chains = defaultChains
-
+const queryClient = new QueryClient()
 const connectors = () => {
   return [
     new InjectedConnector({
@@ -31,10 +33,12 @@ const connectors = () => {
     })
   ]
 }
+
 type GetProviderArgs = {
   chainId?: number;
   connector?: Connector;
 }
+
 const provider = ({ chainId, connector }: GetProviderArgs) => {
   if (chainId == 31337) {
     const chain = connector?.chains.find(x => x.id == 31337)?.rpcUrls[0]
@@ -42,12 +46,16 @@ const provider = ({ chainId, connector }: GetProviderArgs) => {
   }
   return providers.getDefaultProvider(chainId)
 }
+
 function MyApp({ Component, pageProps }: { Component: any, pageProps: any }) {
   return (
     <WalletProvider autoConnect connectors={connectors} provider={provider}>
-      <ToastProvider>
-        <Component {...pageProps} />
-      </ToastProvider>
+      <QueryClientProvider client={queryClient}>
+        <Hydrate state={pageProps.dehydratedState}>
+          <Toaster position="bottom-right" reverseOrder={true} />
+          <Component {...pageProps} />
+        </Hydrate>
+      </QueryClientProvider>
     </WalletProvider>
   );
 }
