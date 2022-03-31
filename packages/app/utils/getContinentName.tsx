@@ -7,7 +7,7 @@ export const getContinentName = ({
 }: getContinentNameInterface): string | undefined => {
   switch (continentSelected) {
     case "AF":
-      return "Asia";
+      return "Africa";
     case "AN":
       return "Antarctica";
     case "AS":

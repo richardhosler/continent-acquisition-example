@@ -31,9 +31,9 @@ export const ContinentInfo = ({
   const population = data
     ?.map((country) => country.population)
     .reduce((a: number, b: number) => a + b, 0);
-
+  const flags = data?.map((country) => country.flag);
   if (isFetching) {
-    return <div>Fetching</div>;
+    return <div>Fetching...</div>;
   }
   if (isLoading) {
     return <div>Loading...</div>;
@@ -45,6 +45,7 @@ export const ContinentInfo = ({
     <div className="max-w-md mx-auto md:max-w-2xl">
       <div className="text-stone-800 text-5xl">{data && data[0].region}</div>
       <div>Population: {numberFormatter(population)}</div>
+      <div>Flags: {flags && flags.length}</div>
     </div>
   );
 };
