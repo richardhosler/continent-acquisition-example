@@ -6,11 +6,9 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        "SmokyBlack": "#12130f",
-        "Xanadu": "#667761",
-        "RedPigment": "#ea2b1f"
-      }
+        Xanadu: "#667761",
+      },
     },
   },
   plugins: [],
-}
+};

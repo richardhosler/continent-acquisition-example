@@ -4,7 +4,7 @@ import { HardhatUserConfig, task } from "hardhat/config";
 import "@nomiclabs/hardhat-waffle";
 import "@typechain/hardhat";
 
-import "hardhat-gas-reporter"
+import "hardhat-gas-reporter";
 dotenv.config();
 
 // This is a sample Hardhat task. To learn how to create your own go to
@@ -25,14 +25,16 @@ const config: HardhatUserConfig = {
   networks: {
     hardhat: {
       blockGasLimit: 3000000000000,
-      chainId: 31337
+      chainId: 31337,
     },
     rinkeby: {
       url: process.env.RINKEBY_URL || "",
       accounts:
-        process.env.METAMASK_PRIVATE_KEY !== undefined ? [process.env.METAMASK_PRIVATE_KEY] : [],
+        process.env.METAMASK_PRIVATE_KEY !== undefined
+          ? [process.env.METAMASK_PRIVATE_KEY]
+          : [],
     },
-  }
+  },
 };
 
 export default config;

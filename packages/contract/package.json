@@ -32,6 +32,6 @@
     "build": "waffle",
     "test": "npx hardhat test",
     "hhn": "npx hardhat node",
-    "hhd" : "npx hardhat run --network localhost scripts/deploy.js"
+    "hhd": "npx hardhat run --network localhost scripts/deploy.js"
   }
 }
