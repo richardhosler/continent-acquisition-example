@@ -1,10 +1,15 @@
 import { useEffect, useState } from "react";
+import { twMerge } from "tailwind-merge";
 
 interface FlagDisplayInterface {
   flags: string[];
+  className?: string;
 }
-export const FlagDisplay = ({ flags }: FlagDisplayInterface): JSX.Element => {
-  const defaultFlagCount = 5;
+export const FlagDisplay = ({
+  flags,
+  className,
+}: FlagDisplayInterface): JSX.Element => {
+  const defaultFlagCount = 10;
   const [numFlags, setNumFlags] = useState(defaultFlagCount);
   useEffect(() => {
     setNumFlags(defaultFlagCount);
@@ -16,19 +21,11 @@ export const FlagDisplay = ({ flags }: FlagDisplayInterface): JSX.Element => {
       setNumFlags(defaultFlagCount);
     }
   };
-  if (numFlags == defaultFlagCount) {
-    return (
-      <div onClick={showMore}>
-        {flags.slice(0, numFlags)}
-        <span onClick={showMore}>&gt;</span>
-      </div>
-    );
-  } else {
-    return (
-      <div className="w-40" onClick={showMore}>
-        {flags.flatMap((flag, index) => (index % 10 == 0 && index != 0 ? [`\n`, flag] : [flag]))}
-        <span onClick={showMore}>&gt;</span>
-      </div>
-    );
-  }
+  const classNames = twMerge("w-60 cursor-pointer", className);
+  return (
+    <div className={classNames} onClick={showMore}>
+      {flags.slice(0, numFlags).flatMap((flag) => [flag, " "])}
+      <span onClick={showMore}>&gt;</span>
+    </div>
+  );
 };

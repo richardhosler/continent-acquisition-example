@@ -35,9 +35,18 @@ const Home: NextPage = () => {
   const [tooltipContent, setTooltipContent] = useState("");
   const [continentSelected, setContinent] = useState("");
   const [{ data: connectData, error: connectError }, connect] = useConnect();
-  const [{ data: networkData, error: networkError, loading: networkLoading }, switchNetwork] = useNetwork();
-  const [{ data: accountData, error: accountError, loading: accountLoading }, disconnect] = useAccount();
-  const [{ data: contractData, error: contractError, loading: contractLoading }, readContinents] = useContractRead(
+  const [
+    { data: networkData, error: networkError, loading: networkLoading },
+    switchNetwork,
+  ] = useNetwork();
+  const [
+    { data: accountData, error: accountError, loading: accountLoading },
+    disconnect,
+  ] = useAccount();
+  const [
+    { data: contractData, error: contractError, loading: contractLoading },
+    readContinents,
+  ] = useContractRead(
     {
       addressOrName: "0x5FbDB2315678afecb367f032d93F642f64180aa3",
       contractInterface: continentToken.abi,
@@ -46,7 +55,7 @@ const Home: NextPage = () => {
     "allContinentsStatus",
     { skip: true }
   );
-  const [{ data: priceData, error: priceError, loading: priceLoading }, readPrice] = useContractRead(
+  const [{ data: priceData, error: priceError }, readPrice] = useContractRead(
     {
       addressOrName: "0x5FbDB2315678afecb367f032d93F642f64180aa3",
       contractInterface: continentToken.abi,
@@ -55,42 +64,35 @@ const Home: NextPage = () => {
     "getCurrentPrice",
     { skip: true }
   );
-  const [
-    { data: relinquishContinentData, error: relinquishContinentError, loading: relinquishContinentLoading },
-    relinquishContinentCall,
-  ] = useContractWrite(
-    {
-      addressOrName: "0x5FbDB2315678afecb367f032d93F642f64180aa3",
-      contractInterface: continentToken.abi,
-      signerOrProvider: provider,
-    },
-    "relinquishContinent"
-  );
-  const [
-    { data: transferContinentData, error: transferContinentError, loading: transferContinentLoading },
-    transferContinentCall,
-  ] = useContractWrite(
-    {
-      addressOrName: "0x5FbDB2315678afecb367f032d93F642f64180aa3",
-      contractInterface: continentToken.abi,
-      signerOrProvider: provider,
-    },
-    "transferContinent"
-  );
-  const [
-    { data: acquireContinentData, error: acquireContinentError, loading: acquireContinentLoading },
-    acquireContractCall,
-  ] = useContractWrite(
-    {
-      addressOrName: "0x5FbDB2315678afecb367f032d93F642f64180aa3",
-      contractInterface: continentToken.abi,
-      signerOrProvider: provider,
-    },
-    "acquireContinent"
-  );
-  const [{ data: transactionData, error: transactionError, loading: transactionLoading }, wait] = useWaitForTransaction(
-    { skip: true }
-  );
+  const [{ error: relinquishContinentError }, relinquishContinentCall] =
+    useContractWrite(
+      {
+        addressOrName: "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+        contractInterface: continentToken.abi,
+        signerOrProvider: provider,
+      },
+      "relinquishContinent"
+    );
+  const [{ error: transferContinentError }, transferContinentCall] =
+    useContractWrite(
+      {
+        addressOrName: "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+        contractInterface: continentToken.abi,
+        signerOrProvider: provider,
+      },
+      "transferContinent"
+    );
+  const [{ error: acquireContinentError }, acquireContractCall] =
+    useContractWrite(
+      {
+        addressOrName: "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+        contractInterface: continentToken.abi,
+        signerOrProvider: provider,
+      },
+      "acquireContinent"
+    );
+  const [{ data: transactionData, error: transactionError }, wait] =
+    useWaitForTransaction({ skip: true });
 
   const [modalIsOpen, setIsOpen] = useState(false);
 
@@ -98,7 +100,11 @@ const Home: NextPage = () => {
     address: string()
       .trim()
       .matches(/^0x[0-9a-f]{40}$/i, "Invalid Etherium address.")
-      .test("isYours", "You already own this.", (value) => value !== accountData?.address)
+      .test(
+        "isYours",
+        "You already own this.",
+        (value) => value !== accountData?.address
+      )
       .required(),
   });
   Modal.setAppElement("#__next");
@@ -106,13 +112,18 @@ const Home: NextPage = () => {
     setTooltipContent(content);
   };
   const getOwnerAddress = (ISO: string): string => {
-    return getContinentId(ISO) != -1 && contractData ? contractData[getContinentId(ISO)][1] : undefined;
+    return getContinentId(ISO) != -1 && contractData
+      ? contractData[getContinentId(ISO)][1]
+      : undefined;
   };
   const handleConnect = (connector: Connector) => {
     connect(connector);
     toast.success(`Connected to ${connector.name}`);
   };
-  const callAcquireContinent = async (ISO: string, price: Result | undefined) => {
+  const callAcquireContinent = async (
+    ISO: string,
+    price: Result | undefined
+  ) => {
     const transaction = await acquireContractCall({
       args: convertStringToByteArray({ s: ISO }),
       overrides: { from: accountData?.address, value: price },
@@ -182,30 +193,55 @@ const Home: NextPage = () => {
           />
         </div>
       )}
-      <Modal isOpen={modalIsOpen} onRequestClose={() => setIsOpen(false)} contentLabel="Modal" style={modalStyle}>
+      <Modal
+        isOpen={modalIsOpen}
+        onRequestClose={() => setIsOpen(false)}
+        contentLabel="Modal"
+        style={modalStyle}
+      >
         <div className="flex place-content-end">
           <Button onClick={() => setIsOpen(false)}>close</Button>
         </div>
-        <ContinentInfo continentSelected={continentSelected} className="float-left" />
-        <div className="float-right">
+        <ContinentInfo
+          continentSelected={continentSelected}
+          className="float-left"
+        />
+        <div className="float-right w-60 py-10 space-y-2">
           <div>
             Owner:
             <Address text={getOwnerAddress(continentSelected)} />
           </div>
           <div>Price: {gweiFormatter(priceData?.toString())}</div>
           {getOwnerAddress(continentSelected) != accountData?.address ? (
-            <Button onClick={async () => callAcquireContinent(continentSelected, await priceData)}>Purchase</Button>
+            <Button
+              onClick={async () =>
+                callAcquireContinent(continentSelected, await priceData)
+              }
+            >
+              Purchase
+            </Button>
           ) : (
             <>
-              <Button onClick={() => callRelinquishContinent(continentSelected)}>Relinquish</Button>
+              <Button
+                onClick={() => callRelinquishContinent(continentSelected)}
+              >
+                Relinquish
+              </Button>
               <Formik
                 initialValues={{
                   address: "",
                 }}
-                onSubmit={(values: Values, { setSubmitting }: FormikHelpers<Values>) => {
+                onSubmit={(
+                  values: Values,
+                  { setSubmitting }: FormikHelpers<Values>
+                ) => {
                   () => {
                     if (accountData) {
-                      callTransferContinent(accountData.address, values.address, continentSelected);
+                      callTransferContinent(
+                        accountData.address,
+                        values.address,
+                        continentSelected
+                      );
                     }
                     setSubmitting(false);
                   };
@@ -217,7 +253,10 @@ const Home: NextPage = () => {
                     <Form>
                       <Field id="address" name="address" placeholder="" />
                       {props.errors.address && props.errors.address}
-                      <Button type="submit" disabled={!(props.isValid && props.dirty)}>
+                      <Button
+                        type="submit"
+                        disabled={!(props.isValid && props.dirty)}
+                      >
                         Transfer
                       </Button>
                     </Form>

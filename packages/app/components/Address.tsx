@@ -17,7 +17,7 @@ export const Address = ({
   handleTooltipChange,
 }: AddressInterface): JSX.Element => {
   const classNames = twMerge(
-    "rounded-md border-2 px-2 bg-slate-100 border-slate-600 text-sm text-gray-900 w-min-content",
+    "rounded-md border-2 px-2 bg-slate-100 border-slate-600 text-sm text-gray-900 w-24",
     className
   );
   return (
