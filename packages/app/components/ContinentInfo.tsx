@@ -38,10 +38,9 @@ export const ContinentInfo = ({ continentSelected, className }: ContinentInfoInt
   if (error) {
     return <div>Error</div>;
   }
-  console.log(flags);
   const classes = twMerge("", className);
   return (
-    <div className="max-w-md mx-auto md:max-w-2xl">
+    <div className="max-w-md mx-auto md:max-w-2xl float-left">
       <div className="text-stone-800 text-5xl">{data && data[0].region}</div>
       <div>Population: {numberFormatter(population)}</div>
       <div>Flags: {flags ? <FlagDisplay flags={flags} /> : null}</div>

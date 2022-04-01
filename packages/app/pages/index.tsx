@@ -147,12 +147,12 @@ const Home: NextPage = () => {
 
   const modalStyle = {
     content: {
-      top: "50%",
-      left: "50%",
-      right: "25%",
-      bottom: "auto",
+      top: "25%",
+      left: "40%",
+      right: "40%",
+      bottom: "25%",
       marginRight: "-25%",
-      transform: "translate(-50%, -50%)",
+      transform: "translate(-25%, -10%)",
     },
   };
 
