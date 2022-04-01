@@ -208,21 +208,34 @@ const Home: NextPage = () => {
         />
         <div className="float-right w-60 py-10 space-y-2">
           <div>
-            Owner:
+            Owner:&nbsp;
             <Address text={getOwnerAddress(continentSelected)} />
           </div>
-          <div>Price: {gweiFormatter(priceData?.toString())}</div>
+
           {getOwnerAddress(continentSelected) != accountData?.address ? (
-            <Button
-              onClick={async () =>
-                callAcquireContinent(continentSelected, await priceData)
-              }
-            >
-              Purchase
-            </Button>
+            <div>
+              {" "}
+              <Button
+                className="bg-green-600 hover:bg-green-500 text-white font-bold py-2 px-4 rounded"
+                onClick={async () =>
+                  callAcquireContinent(continentSelected, await priceData)
+                }
+              >
+                Purchase
+              </Button>
+              &nbsp;&nbsp;
+              <span className="align-bottom">
+                <span className="text-4xl">
+                  {gweiFormatter(priceData?.toString()).amount}
+                </span>
+                &nbsp;&nbsp;
+                {gweiFormatter(priceData?.toString()).symbol}
+              </span>
+            </div>
           ) : (
             <>
               <Button
+                className="bg-red-600 hover:bg-red-500 text-white font-bold py-2 px-4 rounded"
                 onClick={() => callRelinquishContinent(continentSelected)}
               >
                 Relinquish

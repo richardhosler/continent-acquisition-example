@@ -1,12 +1,16 @@
-export const gweiFormatter = (gwei: string | undefined): string => {
+interface CurrencyInterface {
+  amount?: string;
+  symbol?: string;
+}
+export const gweiFormatter = (gwei: string | undefined): CurrencyInterface => {
   if (gwei === undefined) {
-    return "0";
+    return {};
   } else if (gwei.length > 5) {
     let eth = "0.";
     while (BigInt(gwei) !== 0n) {
       eth += gwei.charAt(0);
       gwei = gwei.substring(1);
     }
-    return `${eth} ETH`;
-  } else return `${gwei} Gwei`;
+    return { amount: eth, symbol: "ETH" };
+  } else return { amount: gwei, symbol: "Gwei" };
 };

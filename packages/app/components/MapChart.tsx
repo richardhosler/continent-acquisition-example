@@ -29,20 +29,20 @@ const MapChart = ({
     if (hover) {
       switch (getOwnerAddress(ISO)) {
         case accountData.address:
-          return "#EFEFFF";
+          return "#FFFF77";
         case "0x0000000000000000000000000000000000000000":
-          return "#EFFFEF";
+          return "#77FF77";
         default:
-          return "#EEEFEF";
+          return "#FF7777";
       }
     } else {
       switch (getOwnerAddress(ISO)) {
         case accountData.address:
-          return "#EEEEAF";
+          return "#FFFF00";
         case "0x0000000000000000000000000000000000000000":
-          return "#AFEEAF";
+          return "#00FF00";
         default:
-          return "#EEAFAF";
+          return "#FF0000";
       }
     }
   };
