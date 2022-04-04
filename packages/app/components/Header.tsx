@@ -4,10 +4,12 @@ import { Button } from "./Button";
 import { Address } from "./Address";
 import metamaskIcon from "../assets/icons/metamask.svg";
 import walletconnectIcon from "../assets/icons/walletconnect.svg";
+import { twMerge } from "tailwind-merge";
 interface HeaderInterface {
   address: string | undefined;
   connectors: Connector[];
   networkData: any;
+  className?: string;
   handleConnect: (connector: Connector) => void;
   handleDisconnect: () => void;
   handleSwitchNetwork: (chainId: number) => void;
@@ -18,6 +20,7 @@ export const Header = ({
   address,
   connectors,
   networkData,
+  className,
   handleConnect,
   handleDisconnect,
   handleSwitchNetwork,
@@ -34,18 +37,23 @@ export const Header = ({
   const getConnectorClasses = (connector: Connector): string | undefined => {
     switch (connector.name) {
       case "MetaMask":
-        return "text-gray-900 bg-gray-800 border-slate-600 text-white hover:bg-gray-700";
+        return "bg-gray-800 border-slate-600 text-gray-100 hover:bg-gray-700";
       case "WalletConnect":
-        return "text-gray-900 bg-gray-100 border-slate-600 hover:bg-slate-200";
+        return "bg-gray-100 border-slate-600 text-gray-900 hover:bg-slate-200";
     }
   };
-
+  const classes = twMerge(
+    "flex flex-inline fixed w-screen place-content-end place-items-center p-2 space-x-2 z-10 bg-teal-800 text-white",
+    className
+  );
   return (
     <>
-      <div className="flex flex-inline fixed w-screen place-content-end place-items-center p-2 space-x-2 z-10 bg-Xanadu">
+      <div className={classes}>
         {/* {networkData.chain?.name ?? networkData.chain?.id}{' '}
         {networkData.chain?.unsupported && '(unsupported)'} */}
         {/* <DarkModeToggle /> */}
+
+        {/* if not connected to a wallet */}
         {address === undefined ? (
           connectors.map((connector: Connector) => (
             <Button
@@ -61,6 +69,7 @@ export const Header = ({
           ))
         ) : (
           <>
+            {/* if connected to a wallet */}
             {handleSwitchNetwork &&
               networkData.chains.map((x: any) =>
                 x.id === networkData.chain?.id ? null : (

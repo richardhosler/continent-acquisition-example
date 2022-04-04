@@ -56,10 +56,10 @@ export const ContinentInfo = ({
   if (error) {
     return <div>Error</div>;
   }
-  const classes = twMerge("", className);
+  const classes = twMerge("text-stone-800 space-y-5", className);
   return (
-    <div className="float-left space-y-2">
-      <div className="text-stone-800 text-5xl">{data && data[0].region}</div>
+    <div className={classes}>
+      <div className="text-5xl">{data && data[0].region}</div>
       <div>
         Population:&nbsp;
         <span className="font-semibold text-2xl">
@@ -75,7 +75,7 @@ export const ContinentInfo = ({
           Flags:&nbsp;
           <FlagDisplay
             flags={flags}
-            className="bg-slate-300 px-2 pb-1 rounded-md absolute"
+            className="bg-slate-300 px-2 pb-1 rounded-md"
           />
         </div>
       ) : null}
