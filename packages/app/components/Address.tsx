@@ -16,16 +16,16 @@ export const Address = ({
   className,
   handleTooltipChange,
 }: AddressInterface): JSX.Element => {
-  const classNames = twMerge(
-    "rounded-md border-2 py-1 px-2 bg-slate-100 border-slate-600 text-xs text-gray-900 text-center font-semibold",
+  const classes = twMerge(
+    "rounded-md border-2 py-1 px-2 bg-slate-100 border-slate-600 text-xs text-gray-900 text-center font-semibold hover:bg-slate-200",
     className
   );
   if (text.match(/0{40}/)) {
-    return <span className={classNames}>NONE</span>;
+    return <span className={classes}>NONE</span>;
   } else {
     return (
       <span
-        className={classNames}
+        className={classes}
         onMouseEnter={() => {
           handleTooltipChange && handleTooltipChange(text);
         }}

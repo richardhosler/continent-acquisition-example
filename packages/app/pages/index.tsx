@@ -108,6 +108,7 @@ const Home: NextPage = () => {
       .required(),
   });
   const handleTooltipChange = (content: string) => {
+    ReactTooltip.rebuild();
     setTooltipContent(content);
   };
   const getOwnerAddress = (ISO: string): string => {
@@ -158,14 +159,13 @@ const Home: NextPage = () => {
   Modal.setAppElement("#__next");
   const modalStyle = {
     content: {
-      top: "25%",
-      left: "40%",
-      right: "40%",
-      bottom: "25%",
-      marginRight: "-25%",
-      transform: "translate(-25%, -10%)",
+      // top: "25%",
+      // left: "40%",
+      // right: "40%",
+      // bottom: "25%",
+      // marginRight: "-25%",
+      // transform: "translate(-25%, -10%)",
       borderRadius: "10px",
-      padding: "40px",
       backgroundColor: "#F1F5FF",
       border: "2px solid #525252",
       overflow: "hidden",
@@ -184,7 +184,7 @@ const Home: NextPage = () => {
         handleConnect={handleConnect}
         handleDisconnect={handleDisconnect}
         handleSwitchNetwork={handleSwitchNetwork}
-        // handleTooltipChange={handleTooltipChange}
+        handleTooltipChange={handleTooltipChange}
       />
       {connectData.connected && contractData && (
         <div className="overflow-hidden w-screen h-screen">
@@ -198,58 +198,58 @@ const Home: NextPage = () => {
           />
         </div>
       )}
-      <div id="mroot" className="flex w-2/4 h-2/3">
-        <Modal
-          isOpen={modalIsOpen}
-          onRequestClose={() => setIsOpen(false)}
-          contentLabel="Modal"
-          style={modalStyle}
-        >
-          <div className="flex place-content-end relative -top-5 -right-5">
-            <Button
-              className="font-semibold px-2 py-0 text-lg"
-              onClick={() => setIsOpen(false)}
-            >
-              X
-            </Button>
+      <Modal
+        isOpen={modalIsOpen}
+        onRequestClose={() => setIsOpen(false)}
+        onAfterOpen={() => ReactTooltip.rebuild()}
+        contentLabel="Modal"
+        style={modalStyle}
+        className="w-3/6 h-auto absolute left-1/4 top-1/4 bg-slate-100 border-2 border-slate-500 rounded-lg shadow-lg p-10"
+      >
+        <div className="absolute top-2 right-2">
+          <Button
+            className="font-semibold px-2 py-0 text-lg"
+            onClick={() => setIsOpen(false)}
+          >
+            X
+          </Button>
+        </div>
+        <ContinentInfo
+          continentSelected={continentSelected}
+          className="relative"
+        />
+        <div className="absolute inline-block bottom-10 right-10 h-40">
+          <div>
+            Owner:&nbsp;&nbsp;
+            <Address
+              text={getOwnerAddress(continentSelected)}
+              handleTooltipChange={handleTooltipChange}
+            />
           </div>
-          <ContinentInfo
-            continentSelected={continentSelected}
-            className="float-left relative -top-10"
-          />
-          <div className="float-right py-10">
-            <div className="float-right">
-              Owner:&nbsp;
-              <Address
-                text={getOwnerAddress(continentSelected)}
-                handleTooltipChange={handleTooltipChange}
-              />
-            </div>
-            {getOwnerAddress(continentSelected) /* continent is not owned */ ===
-              "0x0000000000000000000000000000000000000000" && (
-              <div className="pt-10">
-                <Button
-                  className="bg-lime-600 hover:bg-lime-400 text-white font-bold py-2 px-4 rounded"
-                  onClick={async () =>
-                    callAcquireContinent(continentSelected, await priceData)
-                  }
-                >
-                  Buy Now!
-                </Button>
-                &nbsp;&nbsp;
-                <span className="align-bottom">
-                  <span className="text-4xl">
-                    {gweiFormatter(priceData?.toString()).amount}
-                  </span>
-                  &nbsp;&nbsp;
-                  {gweiFormatter(priceData?.toString()).symbol}
+          {getOwnerAddress(continentSelected) /* continent is not owned */ ===
+            "0x0000000000000000000000000000000000000000" && (
+            <div className="pt-10">
+              <div className="">
+                <span className="text-4xl">
+                  {gweiFormatter(priceData?.toString()).amount}
                 </span>
+                &nbsp;&nbsp;
+                {gweiFormatter(priceData?.toString()).symbol}
               </div>
-            )}
-            {getOwnerAddress(
-              continentSelected
-            ).toString() /* you own continent */ === accountData?.address && (
-              <div className="py-5">
+              <Button
+                className="bg-lime-600 hover:bg-lime-400 text-white font-bold py-2 px-4 rounded"
+                onClick={async () =>
+                  callAcquireContinent(continentSelected, await priceData)
+                }
+              >
+                Buy Now!
+              </Button>
+            </div>
+          )}
+          {continentSelected &&
+            getOwnerAddress(continentSelected).toString() ===
+              accountData?.address /* you own continent */ && (
+              <div className="">
                 <Formik
                   initialValues={{
                     address: "",
@@ -274,7 +274,7 @@ const Home: NextPage = () => {
                   {(props) => {
                     return (
                       <Form>
-                        <div className="text-red-600 inline-block pt-5">
+                        <div className="text-red-600 inline-block">
                           &nbsp;&nbsp;
                           {props.errors.address && props.errors.address}
                         </div>
@@ -298,16 +298,15 @@ const Home: NextPage = () => {
                   }}
                 </Formik>
                 <Button
-                  className="float-right bg-red-600 hover:bg-red-500 text-white font-bold py-2 px-4 rounded mt-10"
+                  className="float-right bg-red-600 hover:bg-red-500 text-white font-bold py-2 px-4 rounded mt-8"
                   onClick={() => callRelinquishContinent(continentSelected)}
                 >
                   Relinquish
                 </Button>
               </div>
             )}
-          </div>
-        </Modal>
-      </div>
+        </div>
+      </Modal>
       <Notifications
         errors={[
           connectError,
