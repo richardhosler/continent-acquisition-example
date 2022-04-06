@@ -21,11 +21,11 @@ export const FlagDisplay = ({
       setNumFlags(defaultFlagCount);
     }
   };
-  const classNames = twMerge("w-60 cursor-pointer", className);
+  const classNames = twMerge("w-60 cursor-pointer text-slate-900", className);
   return (
     <div className={classNames} onClick={showMore}>
       {flags.slice(0, numFlags).flatMap((flag) => [flag, " "])}
-      <span onClick={showMore}>&gt;</span>
+      <span onClick={showMore}>&nbsp;ᐯ</span>
     </div>
   );
 };

@@ -34,16 +34,8 @@ export const Header = ({
         return walletconnectIcon;
     }
   };
-  const getConnectorClasses = (connector: Connector): string | undefined => {
-    switch (connector.name) {
-      case "MetaMask":
-        return "bg-gray-800 border-slate-600 text-gray-100 hover:bg-gray-700";
-      case "WalletConnect":
-        return "bg-gray-100 border-slate-600 text-gray-900 hover:bg-slate-200";
-    }
-  };
   const classes = twMerge(
-    "flex flex-inline fixed w-screen place-content-end place-items-center p-2 space-x-2 z-10 bg-teal-800 text-white",
+    "flex flex-inline fixed w-screen place-content-end place-items-center p-2 space-x-2 z-10 bg-slate-800 text-white",
     className
   );
   return (
@@ -60,7 +52,6 @@ export const Header = ({
               {...(!connector.ready && "disabled")}
               key={connector.id}
               onClick={() => handleConnect(connector)}
-              className={getConnectorClasses(connector)}
               icon={getConnectorIcon(connector)}
             >
               {connector.name}
@@ -88,7 +79,7 @@ export const Header = ({
             <Davatar size={24} address={address} />
             <Button
               onClick={handleDisconnect}
-              className="text-white bg-red-700 hover:bg-red-600 border-red-400 border-2"
+              className="text-white bg-red-700 hover:bg-red-600"
             >
               Disconnect
             </Button>

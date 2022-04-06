@@ -3,6 +3,8 @@ import mapData from "../assets/world-110m.json";
 import { ComposableMap, Geographies, Geography } from "react-simple-maps";
 import { Result } from "ethers/lib/utils";
 import { getContinentId } from "../utils/getContinentId";
+import resolveConfig from "tailwindcss/resolveConfig";
+import tailwindConfig from "./../tailwind.config.js";
 interface MapChartInterface {
   onTooltipChange: (content: string) => void;
   contractData: Result;
@@ -19,6 +21,9 @@ const MapChart = ({
   setIsOpen,
   setContinent,
 }: MapChartInterface) => {
+  const fullConfig = resolveConfig(tailwindConfig);
+  console.log({ fullConfig });
+
   const getOwnerAddress = (ISO: string): string | null => {
     return getContinentId(ISO) != -1
       ? contractData[getContinentId(ISO)][1]

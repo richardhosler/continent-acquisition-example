@@ -1,4 +1,5 @@
 import Modal from "react-modal";
+import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import MapChart from "../components/MapChart";
@@ -27,6 +28,12 @@ import { Button } from "../components/Button";
 import { Address } from "../components/Address";
 import { Notifications } from "../components/Notifications";
 import { ContinentInfo } from "../components/ContinentInfo";
+import africaImage from "../public/images/africa.jpg";
+import asiaImage from "../public/images/asia.jpg";
+import europeImage from "../public/images/europe.jpg";
+import northAmericaImage from "../public/images/north-america.jpg";
+import southAmericaImage from "../public/images/south-america.jpg";
+import oceaniaImage from "../public/images/oceania.jpg";
 interface Values {
   address: string;
 }
@@ -43,54 +50,26 @@ const Home: NextPage = () => {
     { data: accountData, error: accountError, loading: accountLoading },
     disconnect,
   ] = useAccount();
+  const contract = {
+    addressOrName: "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+    contractInterface: continentToken.abi,
+    signerOrProvider: provider,
+  };
   const [
-    { data: contractData, error: contractError, loading: contractLoading },
+    { data: continentData, error: continentError, loading: continentLoading },
     readContinents,
-  ] = useContractRead(
-    {
-      addressOrName: "0x5FbDB2315678afecb367f032d93F642f64180aa3",
-      contractInterface: continentToken.abi,
-      signerOrProvider: provider,
-    },
-    "allContinentsStatus",
-    { skip: true }
-  );
+  ] = useContractRead(contract, "allContinentsStatus", { skip: true });
   const [{ data: priceData, error: priceError }, readPrice] = useContractRead(
-    {
-      addressOrName: "0x5FbDB2315678afecb367f032d93F642f64180aa3",
-      contractInterface: continentToken.abi,
-      signerOrProvider: provider,
-    },
+    contract,
     "getCurrentPrice",
     { skip: true }
   );
   const [{ error: relinquishContinentError }, relinquishContinentCall] =
-    useContractWrite(
-      {
-        addressOrName: "0x5FbDB2315678afecb367f032d93F642f64180aa3",
-        contractInterface: continentToken.abi,
-        signerOrProvider: provider,
-      },
-      "relinquishContinent"
-    );
+    useContractWrite(contract, "relinquishContinent");
   const [{ error: transferContinentError }, transferContinentCall] =
-    useContractWrite(
-      {
-        addressOrName: "0x5FbDB2315678afecb367f032d93F642f64180aa3",
-        contractInterface: continentToken.abi,
-        signerOrProvider: provider,
-      },
-      "transferContinent"
-    );
+    useContractWrite(contract, "transferContinent");
   const [{ error: acquireContinentError }, acquireContractCall] =
-    useContractWrite(
-      {
-        addressOrName: "0x5FbDB2315678afecb367f032d93F642f64180aa3",
-        contractInterface: continentToken.abi,
-        signerOrProvider: provider,
-      },
-      "acquireContinent"
-    );
+    useContractWrite(contract, "acquireContinent");
   const [{ data: transactionData, error: transactionError }, wait] =
     useWaitForTransaction({ skip: true });
 
@@ -112,8 +91,8 @@ const Home: NextPage = () => {
     setTooltipContent(content);
   };
   const getOwnerAddress = (ISO: string): string => {
-    return getContinentId(ISO) != -1 && contractData
-      ? contractData[getContinentId(ISO)][1]
+    return getContinentId(ISO) != -1 && continentData
+      ? continentData[getContinentId(ISO)][1]
       : undefined;
   };
   const handleConnect = (connector: Connector) => {
@@ -142,7 +121,7 @@ const Home: NextPage = () => {
   };
   const handleDisconnect = () => {
     disconnect();
-    toast("Disconnected.");
+    toast.error("Disconnected.");
   };
 
   const handleSwitchNetwork = (chainId: number) => {
@@ -155,24 +134,28 @@ const Home: NextPage = () => {
       readPrice();
     }
   }, [connectData.connected, transactionData, readContinents, readPrice]);
-
-  Modal.setAppElement("#__next");
-  const modalStyle = {
-    content: {
-      // top: "25%",
-      // left: "40%",
-      // right: "40%",
-      // bottom: "25%",
-      // marginRight: "-25%",
-      // transform: "translate(-25%, -10%)",
-      borderRadius: "10px",
-      backgroundColor: "#F1F5FF",
-      border: "2px solid #525252",
-      overflow: "hidden",
-    },
+  const getCoverImage = (ISO: string): StaticImageData | string => {
+    const continentId = getContinentId(ISO);
+    switch (continentId) {
+      case 0:
+        return africaImage;
+      case 1:
+        return asiaImage;
+      case 2:
+        return europeImage;
+      case 3:
+        return northAmericaImage;
+      case 4:
+        return southAmericaImage;
+      case 5:
+        return oceaniaImage;
+      default:
+        return " ";
+    }
   };
+  Modal.setAppElement("#__next");
 
-  return accountLoading || networkLoading || contractLoading ? (
+  return accountLoading || networkLoading || continentLoading ? (
     <>Loading...</>
   ) : (
     <>
@@ -186,13 +169,13 @@ const Home: NextPage = () => {
         handleSwitchNetwork={handleSwitchNetwork}
         handleTooltipChange={handleTooltipChange}
       />
-      {connectData.connected && contractData && (
+      {connectData.connected && continentData && (
         <div className="overflow-hidden w-screen h-screen">
           <MapChart
             setContinent={setContinent}
             setIsOpen={setIsOpen}
             onTooltipChange={handleTooltipChange}
-            contractData={contractData}
+            contractData={continentData}
             accountData={accountData}
             readContractData={readContinents}
           />
@@ -203,22 +186,29 @@ const Home: NextPage = () => {
         onRequestClose={() => setIsOpen(false)}
         onAfterOpen={() => ReactTooltip.rebuild()}
         contentLabel="Modal"
-        style={modalStyle}
-        className="w-3/6 h-auto absolute left-1/4 top-1/4 bg-slate-100 border-2 border-slate-500 rounded-lg shadow-lg p-10"
+        className="w-3/6 h-auto absolute left-1/4 top-1/4 bg-slate-100 rounded-lg shadow-lg overflow-hidden grid grid-cols-2 place-items-center"
       >
         <div className="absolute top-2 right-2">
           <Button
-            className="font-semibold px-2 py-0 text-lg"
+            className="font-semibold px-2 py-0 text-lg text-slate-900"
             onClick={() => setIsOpen(false)}
           >
             X
           </Button>
         </div>
-        <ContinentInfo
-          continentSelected={continentSelected}
-          className="relative"
-        />
-        <div className="absolute inline-block bottom-10 right-10 h-40">
+        <div className="relative left-0 -top-1/4 w-96 h-96">
+          <Image
+            src={getCoverImage(continentSelected)}
+            alt={`an image from ${continentSelected}`}
+            className="bg-cover"
+          />
+          <ContinentInfo
+            continentSelected={continentSelected}
+            className="absolute bg-opacity-60 bg-black text-stone-100 h-full w-96 left-0 top-24 pt-10 pl-10"
+          />
+        </div>
+
+        <div className="relative">
           <div>
             Owner:&nbsp;&nbsp;
             <Address
@@ -279,7 +269,7 @@ const Home: NextPage = () => {
                           {props.errors.address && props.errors.address}
                         </div>
                         <div className="space-x-2 align-text-top">
-                          <span className="border-2 border-gray-900 rounded overflow-clip p-1">
+                          <span className="rounded overflow-clip p-1">
                             <Field
                               id="address"
                               name="address"
@@ -312,7 +302,7 @@ const Home: NextPage = () => {
           connectError,
           networkError,
           accountError,
-          contractError,
+          continentError,
           priceError,
           relinquishContinentError,
           transferContinentError,

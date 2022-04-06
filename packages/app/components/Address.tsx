@@ -17,24 +17,23 @@ export const Address = ({
   handleTooltipChange,
 }: AddressInterface): JSX.Element => {
   const classes = twMerge(
-    "rounded-md border-2 py-1 px-2 bg-slate-100 border-slate-600 text-xs text-gray-900 text-center font-semibold hover:bg-slate-200",
+    "rounded-xl py-1 px-2 bg-slate-100 text-sm text-gray-900 text-center hover:bg-slate-200",
     className
   );
-  if (text.match(/0{40}/)) {
-    return <span className={classes}>NONE</span>;
-  } else {
-    return (
-      <span
-        className={classes}
-        onMouseEnter={() => {
-          handleTooltipChange && handleTooltipChange(text);
-        }}
-        onMouseLeave={() => {
-          handleTooltipChange && handleTooltipChange("");
-        }}
-      >
-        {truncateString({ text, prefix, suffix })}
-      </span>
-    );
-  }
+
+  return text.match(/0{40}/) ? (
+    <span className={classes}>NONE</span>
+  ) : (
+    <span
+      className={classes}
+      onMouseEnter={() => {
+        handleTooltipChange && handleTooltipChange(text);
+      }}
+      onMouseLeave={() => {
+        handleTooltipChange && handleTooltipChange("");
+      }}
+    >
+      {truncateString({ text, prefix, suffix })}
+    </span>
+  );
 };

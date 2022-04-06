@@ -3,9 +3,6 @@ export const getContinentId = (continentName: string): number => {
     case "Africa":
     case "AF":
       return 0;
-    case "Antarctica":
-    case "AN":
-      return 6;
     case "Asia":
     case "AS":
       return 1;
@@ -15,12 +12,15 @@ export const getContinentId = (continentName: string): number => {
     case "North America":
     case "NA":
       return 3;
-    case "Oceania":
-    case "OC":
-      return 5;
     case "South America":
     case "SA":
       return 4;
+    case "Oceania":
+    case "OC":
+      return 5;
+    case "Antarctica":
+    case "AN":
+      return 6;
     default:
       return -1;
   }

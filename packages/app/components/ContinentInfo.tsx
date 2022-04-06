@@ -22,14 +22,7 @@ interface CountryInterface {
 }
 export const ContinentInfo = ({
   continentSelected,
-  fieldList = [
-    "population",
-    "area",
-    "currencies",
-    "languages",
-    "flags",
-    "region",
-  ],
+  fieldList = ["population", "area", "flags", "region"],
   className,
 }: ContinentInfoInterface) => {
   const fetchURL = `https://restcountries.com/v3.1/region/${getContinentName({
@@ -69,10 +62,11 @@ export const ContinentInfo = ({
   if (error) {
     return <div>Error</div>;
   }
-  const classes = twMerge("text-stone-800 space-y-3", className);
+  const classes = twMerge("space-y-3", className);
   return (
     <div className={classes}>
       <div className="text-5xl">{data && data[0].region}</div>
+
       {fieldList.find((field) => field === "population") && (
         <div>
           Population:&nbsp;
@@ -81,6 +75,7 @@ export const ContinentInfo = ({
           </span>
         </div>
       )}
+
       {fieldList.find((field) => field === "area") && (
         <div>
           Area (km<span className="text-xs align-super">2</span>):&nbsp;
@@ -89,6 +84,7 @@ export const ContinentInfo = ({
           </span>
         </div>
       )}
+
       {fieldList.find((field) => field === "flags") && flags && (
         <div>
           Flags:&nbsp;
@@ -98,6 +94,7 @@ export const ContinentInfo = ({
           />
         </div>
       )}
+
       {fieldList.find((field) => field === "currencies") && (
         <div>Currencies:&nbsp;{}</div>
       )}
