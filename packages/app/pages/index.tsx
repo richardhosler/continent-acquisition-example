@@ -1,7 +1,7 @@
 import Modal from "react-modal";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import MapChart from "../components/MapChart";
 import { Result } from "ethers/lib/utils";
 import ReactTooltip from "react-tooltip";
@@ -34,6 +34,9 @@ import europeImage from "../public/images/europe.jpg";
 import northAmericaImage from "../public/images/north-america.jpg";
 import southAmericaImage from "../public/images/south-america.jpg";
 import oceaniaImage from "../public/images/oceania.jpg";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import Slider from "react-slick";
 interface Values {
   address: string;
 }
@@ -153,8 +156,16 @@ const Home: NextPage = () => {
         return " ";
     }
   };
-  Modal.setAppElement("#__next");
 
+  Modal.setAppElement("#__next");
+  const sliderSettings = {
+    dots: false,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    arrows: true,
+  };
   return accountLoading || networkLoading || continentLoading ? (
     <>Loading...</>
   ) : (
@@ -170,132 +181,140 @@ const Home: NextPage = () => {
         handleTooltipChange={handleTooltipChange}
       />
       {connectData.connected && continentData && (
-        <div className="overflow-hidden w-screen h-screen">
-          <MapChart
-            setContinent={setContinent}
-            setIsOpen={setIsOpen}
-            onTooltipChange={handleTooltipChange}
-            contractData={continentData}
-            accountData={accountData}
-            readContractData={readContinents}
-          />
-        </div>
+        <MapChart
+          setContinent={setContinent}
+          setIsOpen={setIsOpen}
+          onTooltipChange={handleTooltipChange}
+          contractData={continentData}
+          accountData={accountData}
+          readContractData={readContinents}
+        />
       )}
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={() => setIsOpen(false)}
         onAfterOpen={() => ReactTooltip.rebuild()}
         contentLabel="Modal"
-        className="w-3/6 h-auto absolute left-1/4 top-1/4 bg-slate-100 rounded-lg shadow-lg overflow-hidden grid grid-cols-2 place-items-center"
+        className="w-3/6 relative left-1/4 top-1/4 bg-slate-100 rounded-lg shadow-lg"
       >
-        <div className="absolute top-2 right-2">
-          <Button
-            className="font-semibold px-2 py-0 text-lg text-slate-900"
-            onClick={() => setIsOpen(false)}
-          >
-            X
-          </Button>
-        </div>
-        <div className="relative left-0 -top-1/4 w-96 h-96">
-          <Image
-            src={getCoverImage(continentSelected)}
-            alt={`an image from ${continentSelected}`}
-            className="bg-cover"
-          />
-          <ContinentInfo
-            continentSelected={continentSelected}
-            className="absolute bg-opacity-60 bg-black text-stone-100 h-full w-96 left-0 top-24 pt-10 pl-10"
-          />
-        </div>
-
-        <div className="relative">
+        <Slider {...sliderSettings}>
           <div>
-            Owner:&nbsp;&nbsp;
-            <Address
-              text={getOwnerAddress(continentSelected)}
-              handleTooltipChange={handleTooltipChange}
-            />
-          </div>
-          {getOwnerAddress(continentSelected) /* continent is not owned */ ===
-            "0x0000000000000000000000000000000000000000" && (
-            <div className="pt-10">
-              <div className="">
-                <span className="text-4xl">
-                  {gweiFormatter(priceData?.toString()).amount}
-                </span>
-                &nbsp;&nbsp;
-                {gweiFormatter(priceData?.toString()).symbol}
-              </div>
+            <div className="grid grid-flow-row-dense grid-cols-2 gap-4">
+              {/* <div className="absolute top-2 right-2">
               <Button
-                className="bg-lime-600 hover:bg-lime-400 text-white font-bold py-2 px-4 rounded"
-                onClick={async () =>
-                  callAcquireContinent(continentSelected, await priceData)
-                }
+                className="font-semibold px-2 py-0 text-lg text-slate-900"
+                onClick={() => setIsOpen(false)}
               >
-                Buy Now!
+                X
               </Button>
-            </div>
-          )}
-          {continentSelected &&
-            getOwnerAddress(continentSelected).toString() ===
-              accountData?.address /* you own continent */ && (
-              <div className="">
-                <Formik
-                  initialValues={{
-                    address: "",
-                  }}
-                  onSubmit={(
-                    values: Values,
-                    { setSubmitting }: FormikHelpers<Values>
-                  ) => {
-                    () => {
-                      if (accountData) {
-                        callTransferContinent(
-                          accountData.address,
-                          values.address,
-                          continentSelected
-                        );
-                      }
-                      setSubmitting(false);
-                    };
-                  }}
-                  validationSchema={schema}
-                >
-                  {(props) => {
-                    return (
-                      <Form>
-                        <div className="text-red-600 inline-block">
-                          &nbsp;&nbsp;
-                          {props.errors.address && props.errors.address}
-                        </div>
-                        <div className="space-x-2 align-text-top">
-                          <span className="rounded overflow-clip p-1">
-                            <Field
-                              id="address"
-                              name="address"
-                              placeholder="recipient address..."
-                            />
-                          </span>
-                          <Button
-                            type="submit"
-                            disabled={!(props.isValid && props.dirty)}
-                          >
-                            Transfer
-                          </Button>
-                        </div>
-                      </Form>
-                    );
-                  }}
-                </Formik>
-                <Button
-                  className="float-right bg-red-600 hover:bg-red-500 text-white font-bold py-2 px-4 rounded mt-8"
-                  onClick={() => callRelinquishContinent(continentSelected)}
-                >
-                  Relinquish
-                </Button>
+            </div> */}
+              <div className="relative overflow-hidden rounded-l-lg">
+                <ContinentInfo
+                  continentSelected={continentSelected}
+                  className="z-10 p-6 relative bg-opacity-60 bg-black text-stone-100 inset-0"
+                />
+                <Image
+                  layout="fill"
+                  className="object-center object-cover pointer-events-none"
+                  src={getCoverImage(continentSelected)}
+                  alt={`an image from ${continentSelected}`}
+                />
               </div>
-            )}
-        </div>
+
+              <div className="flex flex-col place-content-between p-6">
+                <div>
+                  Owner:&nbsp;&nbsp;
+                  <Address
+                    text={getOwnerAddress(continentSelected)}
+                    handleTooltipChange={handleTooltipChange}
+                  />
+                </div>
+                {getOwnerAddress(
+                  continentSelected
+                ) /* continent is not owned */ ===
+                  "0x0000000000000000000000000000000000000000" && (
+                  <Button
+                    className="bg-lime-600 hover:bg-lime-400 text-white font-bold py-2 px-4 place-self-end"
+                    onClick={async () =>
+                      callAcquireContinent(continentSelected, priceData)
+                    }
+                  >
+                    <div className="flex space-x-2">
+                      <span className="font-normal">
+                        {gweiFormatter(priceData?.toString()).amount}
+                        {gweiFormatter(priceData?.toString()).symbol}
+                      </span>
+                      <span>BUY</span>
+                    </div>
+                  </Button>
+                )}
+                {continentSelected &&
+                  getOwnerAddress(continentSelected).toString() ===
+                    accountData?.address /* you own continent */ && (
+                    <div className="">
+                      <Formik
+                        initialValues={{
+                          address: "",
+                        }}
+                        onSubmit={(
+                          values: Values,
+                          { setSubmitting }: FormikHelpers<Values>
+                        ) => {
+                          () => {
+                            if (accountData) {
+                              callTransferContinent(
+                                accountData.address,
+                                values.address,
+                                continentSelected
+                              );
+                            }
+                            setSubmitting(false);
+                          };
+                        }}
+                        validationSchema={schema}
+                      >
+                        {(props) => {
+                          return (
+                            <Form>
+                              <div className="text-red-600 inline-block">
+                                &nbsp;&nbsp;
+                                {props.errors.address && props.errors.address}
+                              </div>
+                              <div className="space-x-2 align-text-top">
+                                <span className="rounded overflow-clip p-1">
+                                  <Field
+                                    id="address"
+                                    name="address"
+                                    placeholder="recipient address..."
+                                  />
+                                </span>
+                                <Button
+                                  type="submit"
+                                  disabled={!(props.isValid && props.dirty)}
+                                >
+                                  Transfer
+                                </Button>
+                              </div>
+                            </Form>
+                          );
+                        }}
+                      </Formik>
+                      <Button
+                        className="float-right bg-red-600 hover:bg-red-500 text-white font-bold py-2 px-4 rounded mt-8"
+                        onClick={() =>
+                          callRelinquishContinent(continentSelected)
+                        }
+                      >
+                        Relinquish
+                      </Button>
+                    </div>
+                  )}
+              </div>
+            </div>
+          </div>
+          {/* Second slide */}
+          <div></div>
+        </Slider>
       </Modal>
       <Notifications
         errors={[

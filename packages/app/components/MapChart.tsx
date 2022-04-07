@@ -54,8 +54,8 @@ const MapChart = ({
   return (
     <ComposableMap
       data-tip=""
-      projectionConfig={{ scale: 120 }}
-      className="bg-blue-500 relative -top-1/4"
+      projectionConfig={{ scale: 170 }}
+      className="pt-6 max-h-screen w-full"
     >
       <Geographies geography={mapData}>
         {({ geographies }) =>

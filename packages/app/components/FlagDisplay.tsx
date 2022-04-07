@@ -9,7 +9,7 @@ export const FlagDisplay = ({
   flags,
   className,
 }: FlagDisplayInterface): JSX.Element => {
-  const defaultFlagCount = 10;
+  const defaultFlagCount = 6;
   const [numFlags, setNumFlags] = useState(defaultFlagCount);
   useEffect(() => {
     setNumFlags(defaultFlagCount);
@@ -21,7 +21,7 @@ export const FlagDisplay = ({
       setNumFlags(defaultFlagCount);
     }
   };
-  const classNames = twMerge("w-60 cursor-pointer text-slate-900", className);
+  const classNames = twMerge("w-80 cursor-pointer text-2xl", className);
   return (
     <div className={classNames} onClick={showMore}>
       {flags.slice(0, numFlags).flatMap((flag) => [flag, " "])}

@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useQuery } from "react-query";
 import { twMerge } from "tailwind-merge";
 import { map } from "zod";
@@ -22,19 +23,16 @@ interface CountryInterface {
 }
 export const ContinentInfo = ({
   continentSelected,
-  fieldList = ["population", "area", "flags", "region"],
+  fieldList = ["population", "area", "region"],
   className,
 }: ContinentInfoInterface) => {
   const fetchURL = `https://restcountries.com/v3.1/region/${getContinentName({
     continentSelected,
   })}`;
-  const { isFetching, isLoading, error, data } = useQuery<
-    CountryInterface[],
-    Error
-  >(["Region", continentSelected], () =>
-    fetch(fetchURL).then((res) => res.json())
+  const { data } = useQuery<CountryInterface[], Error>(
+    ["Region", continentSelected],
+    () => fetch(fetchURL).then((res) => res.json())
   );
-
   const population =
     data &&
     Math.floor(
@@ -50,48 +48,34 @@ export const ContinentInfo = ({
         .reduce((a: number, b: number) => a + b, 0)
     );
   const flags = data?.map((country) => country.flag);
-  if (isFetching) {
-    return <div>Fetching...</div>;
-  }
   const currencyObjects = data?.map((country) => country.currencies);
   console.log(currencyObjects);
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-  if (error) {
-    return <div>Error</div>;
-  }
-  const classes = twMerge("space-y-3", className);
+  let classes = twMerge("h-full space-y-3", className);
   return (
     <div className={classes}>
       <div className="text-5xl">{data && data[0].region}</div>
 
       {fieldList.find((field) => field === "population") && (
         <div>
-          Population:&nbsp;
-          <span className="font-semibold text-2xl">
+          Population
+          <div className="font-semibold text-2xl">
             {numberFormatter(population)}
-          </span>
+          </div>
         </div>
       )}
 
       {fieldList.find((field) => field === "area") && (
         <div>
-          Area (km<span className="text-xs align-super">2</span>):&nbsp;
-          <span className="font-semibold text-2xl">
-            {numberFormatter(area)}
-          </span>
+          Area (km<span className="text-xs align-super">2</span>)
+          <div className="font-semibold text-2xl">{numberFormatter(area)}</div>
         </div>
       )}
 
       {fieldList.find((field) => field === "flags") && flags && (
         <div>
-          Flags:&nbsp;
-          <FlagDisplay
-            flags={flags}
-            className="bg-slate-300 px-2 pb-1 rounded-md"
-          />
+          Flags:
+          <FlagDisplay flags={flags} className="px-2" />
         </div>
       )}
 

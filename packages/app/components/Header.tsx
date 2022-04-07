@@ -34,10 +34,12 @@ export const Header = ({
         return walletconnectIcon;
     }
   };
+
   const classes = twMerge(
-    "flex flex-inline fixed w-screen place-content-end place-items-center p-2 space-x-2 z-10 bg-slate-800 text-white",
+    "flex flex-inline fixed w-full place-content-end place-items-center p-2 space-x-2 bg-slate-800 text-white",
     className
   );
+
   return (
     <>
       <div className={classes}>
