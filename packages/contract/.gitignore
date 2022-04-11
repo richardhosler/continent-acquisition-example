@@ -9,4 +9,5 @@ lerna-debug.log
 #Hardhat files
 cache
 artifacts
-yarn-error.log
+yarn-error.log*
+yarn-debug.log*
