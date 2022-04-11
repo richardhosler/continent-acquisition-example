@@ -43,6 +43,7 @@ import { getContinentName } from "../utils/getContinentName";
 import { CountryInterface } from "../utils/restCountriesUtils";
 import { twMerge } from "tailwind-merge";
 import chevron from "../assets/icons/chevron.svg";
+import { MouseEventHandler } from "react";
 interface Values {
   address: string;
 }
@@ -189,7 +190,11 @@ const Home: NextPage = () => {
   );
 
   Modal.setAppElement("#__next");
-  const NextArrow = (props) => {
+  const NextArrow = (props: {
+    className?: string;
+    style?: React.CSSProperties;
+    onClick?: MouseEventHandler;
+  }) => {
     const { className, style, onClick } = props;
 
     return (
@@ -206,7 +211,11 @@ const Home: NextPage = () => {
     );
   };
 
-  const PrevArrow = (props) => {
+  const PrevArrow = (props: {
+    className?: string;
+    style?: React.CSSProperties;
+    onClick?: MouseEventHandler;
+  }) => {
     const { className, style, onClick } = props;
     return (
       <div
@@ -273,7 +282,7 @@ const Home: NextPage = () => {
               <div className="relative overflow-hidden rounded-l-lg">
                 <ContinentInfo
                   continentSelected={continentSelected}
-                  className="z-10 p-6 relative bg-opacity-60 bg-black text-stone-100 inset-0"
+                  className="z-10 p-6 relative bg-opacity-60 bg-slate-900 text-stone-100 inset-0"
                 />
                 <Image
                   layout="fill"
