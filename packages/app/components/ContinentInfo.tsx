@@ -1,10 +1,8 @@
-import { useState } from "react";
 import { useQuery } from "react-query";
 import { twMerge } from "tailwind-merge";
-import { map } from "zod";
 import { getContinentName } from "../utils/getContinentName";
 import { FlagDisplay } from "./FlagDisplay";
-import { numberFormatter } from "./numberFormatter";
+import { numberFormatter } from "../utils/numberFormatter";
 
 interface ContinentInfoInterface {
   continentSelected: string;
@@ -49,9 +47,8 @@ export const ContinentInfo = ({
     );
   const flags = data?.map((country) => country.flag);
   const currencyObjects = data?.map((country) => country.currencies);
-  console.log(currencyObjects);
 
-  let classes = twMerge("h-full space-y-3", className);
+  let classes = twMerge("h-80 space-y-3", className);
   return (
     <div className={classes}>
       <div className="text-5xl">{data && data[0].region}</div>
@@ -67,7 +64,7 @@ export const ContinentInfo = ({
 
       {fieldList.find((field) => field === "area") && (
         <div>
-          Area (km<span className="text-xs align-super">2</span>)
+          Area (km{"\u00B2"})
           <div className="font-semibold text-2xl">{numberFormatter(area)}</div>
         </div>
       )}

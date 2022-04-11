@@ -55,7 +55,9 @@ const provider = ({ chainId, connector }: GetProviderArgs) => {
     const chain = connector?.chains.find((x) => x.id == 31337)?.rpcUrls[0];
     return new providers.JsonRpcProvider(chain);
   }
-  return providers.getDefaultProvider(chainId);
+  return providers.getDefaultProvider(chainId, {
+    alchemy: "i-KZTigEwKaHOshLhZ6btF0XpRI0dFHq",
+  });
 };
 
 function MyApp({ Component, pageProps }: { Component: any; pageProps: any }) {

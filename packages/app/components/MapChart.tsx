@@ -22,8 +22,6 @@ const MapChart = ({
   setContinent,
 }: MapChartInterface) => {
   const fullConfig = resolveConfig(tailwindConfig);
-  console.log({ fullConfig });
-
   const getOwnerAddress = (ISO: string): string | null => {
     return getContinentId(ISO) != -1
       ? contractData[getContinentId(ISO)][1]

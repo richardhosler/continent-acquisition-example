@@ -7,7 +7,7 @@ interface ButtonInterface {
   disabled?: boolean;
   type?: string;
   icon?: string;
-  children: React.ReactNode;
+  children?: React.ReactNode;
   iconClassName?: string;
   iconWidth?: number;
   iconHeight?: number;
@@ -28,7 +28,6 @@ export const Button = ({
     "bg-slate-100 hover:bg-slate-200 text-slate-900 focus:bg-slate-300 font-medium rounded-sm text-sm px-5 py-1 text-center inline-flex items-center space-x-2",
     className
   );
-  console.log(buttonClasses);
 
   return (
     <button className={buttonClasses} onClick={onClick} disabled={disabled}>
