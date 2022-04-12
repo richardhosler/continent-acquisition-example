@@ -77,8 +77,8 @@ export const Header = ({
               prefix={5}
               suffix={4}
               handleTooltipChange={handleTooltipChange}
+              className="bg-slate-800 text-slate-100 hover:bg-slate-700"
             />
-            <Davatar size={24} address={address} />
             <Button
               onClick={handleDisconnect}
               className="text-white bg-red-700 hover:bg-red-600"
