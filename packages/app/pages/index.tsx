@@ -27,7 +27,6 @@ import { gweiFormatter } from "../utils/gweiFormatter";
 import { Header } from "../components/Header";
 import { Button } from "../components/Button";
 import { Address } from "../components/Address";
-import { Notifications } from "../components/Notifications";
 import { ContinentInfo } from "../components/ContinentInfo";
 import africaImage from "../public/images/africa.jpg";
 import asiaImage from "../public/images/asia.jpg";
@@ -144,6 +143,48 @@ const Home: NextPage = () => {
       readPrice();
     }
   }, [connectData.connected, transactionData, readContinents, readPrice]);
+  useEffect(() => {
+    if (
+      [
+        connectError,
+        networkError,
+        accountError,
+        continentError,
+        priceError,
+        relinquishContinentError,
+        transferContinentError,
+        acquireContinentError,
+        transactionError,
+      ]
+    ) {
+      [
+        connectError,
+        networkError,
+        accountError,
+        continentError,
+        priceError,
+        relinquishContinentError,
+        transferContinentError,
+        acquireContinentError,
+        transactionError,
+      ].map((error) => {
+        if (error?.message) {
+          console.log({ ApplicationError: error.message });
+          toast.error(error.message);
+        }
+      });
+    }
+  }, [
+    connectError,
+    networkError,
+    accountError,
+    continentError,
+    priceError,
+    relinquishContinentError,
+    transferContinentError,
+    acquireContinentError,
+    transactionError,
+  ]);
   const getCoverImage = (ISO: string): StaticImageData | string => {
     const continentId = getContinentId(ISO);
     switch (continentId) {
@@ -392,19 +433,6 @@ const Home: NextPage = () => {
           {data && <CountryDataView data={data} />}
         </Slider>
       </Modal>
-      <Notifications
-        errors={[
-          connectError,
-          networkError,
-          accountError,
-          continentError,
-          priceError,
-          relinquishContinentError,
-          transferContinentError,
-          acquireContinentError,
-          transactionError,
-        ]}
-      />
     </>
   );
 };
