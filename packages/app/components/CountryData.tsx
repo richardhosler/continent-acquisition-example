@@ -3,14 +3,19 @@ import { createTable, sortRowsFn, useTable } from "@tanstack/react-table";
 import { useState, useMemo } from "react";
 import Image from "next/image";
 import { numberFormatter } from "../utils/numberFormatter";
+import { twMerge } from "tailwind-merge";
 
 interface CountryDataViewInterface {
   data: CountryInterface[];
+  headerStyle?: string;
 }
 
 const table = createTable<{ Row: CountryInterface }>();
 
-export const CountryDataView = ({ data }: CountryDataViewInterface) => {
+export const CountryDataView = ({
+  data,
+  headerStyle,
+}: CountryDataViewInterface) => {
   const [sorting, setSorting] = useState([]);
 
   const columns = useMemo(
@@ -48,6 +53,10 @@ export const CountryDataView = ({ data }: CountryDataViewInterface) => {
     sortRowsFn: sortRowsFn,
   });
 
+  const headerClasses = twMerge(
+    "bg-slate-800 text-slate-100 text-left font-semibold w-full p-4",
+    headerStyle
+  );
   return (
     <div>
       <table
@@ -60,7 +69,7 @@ export const CountryDataView = ({ data }: CountryDataViewInterface) => {
               {headerGroup.headers.map((header, key) => {
                 return (
                   <th
-                    className="bg-slate-800 text-slate-100 text-left font-semibold w-full p-4"
+                    className={headerClasses}
                     key={key}
                     {...header.getHeaderProps()}
                   >
