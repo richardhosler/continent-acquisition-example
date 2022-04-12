@@ -54,7 +54,7 @@ export const CountryDataView = ({
   });
 
   const headerClasses = twMerge(
-    "bg-slate-800 text-slate-100 text-left font-semibold w-full p-3 px-4",
+    "bg-slate-800 text-slate-100 text-left font-semibold w-full py-2 px-4",
     headerStyle
   );
   return (
@@ -104,7 +104,11 @@ export const CountryDataView = ({
               >
                 {row.getVisibleCells().map((cell, key) => {
                   return (
-                    <td key={key} {...cell.getCellProps()} className="p-2 px-4">
+                    <td
+                      key={key}
+                      {...cell.getCellProps()}
+                      className="py-2 px-4"
+                    >
                       {cell.renderCell()}
                     </td>
                   );
