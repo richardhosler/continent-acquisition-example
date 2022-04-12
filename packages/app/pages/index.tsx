@@ -44,6 +44,7 @@ import { CountryInterface } from "../utils/restCountriesUtils";
 import { twMerge } from "tailwind-merge";
 import chevron from "../assets/icons/chevron.svg";
 import { MouseEventHandler } from "react";
+import { flavourText } from "../utils/getFlavourText";
 interface Values {
   address: string;
 }
@@ -136,24 +137,6 @@ const Home: NextPage = () => {
 
   const handleSwitchNetwork = (chainId: number) => {
     switchNetwork && switchNetwork(chainId);
-  };
-  const flavourText = (ISO: string) => {
-    switch (ISO) {
-      case "AF":
-        return "Africa is the largest of the three great southward projections from the largest landmass of the Earth. Separated from Europe by the Mediterranean Sea, it is joined to Asia at its northeast extremity by the Isthmus of Suez.";
-      case "AS":
-        return "Asia is the largest continent on Earth, at 9% of the Earth's total surface area, and has the longest coastline, at 62,800 kilometres. It is located to the east of the Suez Canal and the Ural Mountains, and south of the Caucasus Mountains and the Caspian and Black Seas.";
-      case "EU":
-        return "Europe has a higher ratio of coast to landmass than any other continent or subcontinent. Its maritime borders consist of the Arctic Ocean to the north, the Atlantic Ocean to the west and the Mediterranean, Black and Caspian Seas to the south.";
-      case "NA":
-        return "North America occupies the northern portion of the landmass generally referred to as the New World, the Western Hemisphere, the Americas, or simply America. North America is the third-largest continent by area, following Asia and Africa.";
-      case "SA":
-        return "South America occupies the southern portion of the Americas. The continent is generally delimited on the northwest by the Darién watershed along the Colombia–Panama border, although some may consider the border instead to be the Panama Canal.";
-      case "OC":
-        return "Under a standard four region model, the major islands of Oceania extend to New Guinea in the west, the Bonin Islands in the northwest, the Hawaiian Islands in the northeast, Easter Island and Sala y Gómez Island in the east, and Macquarie Island in the south.";
-      default:
-        return "";
-    }
   };
   useEffect(() => {
     if (connectData.connected) {
@@ -257,7 +240,6 @@ const Home: NextPage = () => {
         handleConnect={handleConnect}
         handleDisconnect={handleDisconnect}
         handleSwitchNetwork={handleSwitchNetwork}
-        handleTooltipChange={handleTooltipChange}
       />
       {connectData.connected && continentData && (
         <MapChart
@@ -272,14 +254,13 @@ const Home: NextPage = () => {
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={() => setIsOpen(false)}
-        onAfterOpen={() => ReactTooltip.rebuild()}
         contentLabel="Modal"
         className="w-3/6 absolute left-1/4 top-1/4 bg-slate-100 rounded-lg shadow-lg max-h-80 overflow-hidden"
       >
         <Slider {...sliderSettings}>
           <div>
-            <div className="grid grid-flow-row-dense grid-cols-2 gap-4">
-              <div className="relative overflow-hidden rounded-l-lg">
+            <div className="grid grid-flow-row-dense grid-cols-5">
+              <div className="relative overflow-hidden rounded-l-lg col-span-2">
                 <ContinentInfo
                   continentSelected={continentSelected}
                   className="z-10 p-6 relative bg-opacity-60 bg-slate-900 text-stone-100 inset-0"
@@ -292,21 +273,12 @@ const Home: NextPage = () => {
                 />
               </div>
 
-              <div className="flex flex-col place-content-between p-6">
-                <div>
-                  Owner:&nbsp;&nbsp;
-                  <Address
-                    text={getOwnerAddress(continentSelected)}
-                    handleTooltipChange={handleTooltipChange}
-                  />
-                </div>
+              <div className="flex flex-col place-content-between p-6 col-span-3">
+                <div className="mb-6">{flavourText(continentSelected)}</div>
                 {getOwnerAddress(continentSelected) ===
                   "0x0000000000000000000000000000000000000000" && (
                   /* continent is not owned */
                   <div>
-                    <div className="text-justify mb-6">
-                      {flavourText(continentSelected)}
-                    </div>
                     <Button
                       className="bg-lime-600 hover:bg-lime-400 text-white font-bold py-2 px-4 float-right"
                       onClick={async () =>
@@ -328,9 +300,6 @@ const Home: NextPage = () => {
                     accountData?.address && (
                     /* you own continent */
                     <div className="">
-                      <div className="text-justify mb-6">
-                        You own this continent, you can interact with it below.
-                      </div>
                       <Formik
                         initialValues={{
                           address: "",
@@ -354,38 +323,41 @@ const Home: NextPage = () => {
                       >
                         {(props) => {
                           return (
-                            <Form>
-                              <div className="text-red-600 inline-block">
-                                &nbsp;&nbsp;
-                                {props.errors.address && props.errors.address}
-                              </div>
-                              <div className="space-x-2 align-text-top">
-                                <span className="rounded overflow-clip p-1">
+                            <span className="flex">
+                              <Button
+                                className="float-left bg-red-600 hover:bg-red-500 text-white"
+                                onClick={() =>
+                                  callRelinquishContinent(continentSelected)
+                                }
+                              >
+                                Relinquish
+                              </Button>
+                              <Form className="w-full">
+                                <div className="align-text-top flex place-content-between">
+                                  <div className="text-red-600 inline-block">
+                                    &nbsp;&nbsp;
+                                    {props.errors.address &&
+                                      props.errors.address}
+                                  </div>
                                   <Field
                                     id="address"
                                     name="address"
                                     placeholder="recipient address..."
+                                    className="text-slate-900 bg-white border-2 border-slate-300 rounded-sm"
                                   />
-                                </span>
-                                <Button
-                                  type="submit"
-                                  disabled={!(props.isValid && props.dirty)}
-                                >
-                                  Transfer
-                                </Button>
-                              </div>
-                            </Form>
+                                  <Button
+                                    type="submit"
+                                    disabled={!(props.isValid && props.dirty)}
+                                    className="bg-lime-600 hover:bg-lime-400 text-white float-right"
+                                  >
+                                    Transfer
+                                  </Button>
+                                </div>
+                              </Form>
+                            </span>
                           );
                         }}
                       </Formik>
-                      <Button
-                        className="float-right bg-red-600 hover:bg-red-500 text-white font-bold py-2 px-4 rounded mt-8"
-                        onClick={() =>
-                          callRelinquishContinent(continentSelected)
-                        }
-                      >
-                        Relinquish
-                      </Button>
                     </div>
                   )}
                 {continentSelected &&
@@ -394,15 +366,13 @@ const Home: NextPage = () => {
                   getOwnerAddress(continentSelected).toString() !==
                     "0x0000000000000000000000000000000000000000" && (
                     /* continent owned by elseone */
-                    <div className="mb-6">
-                      This continent has been purchased by <br />
-                      <span className="text-xs">
-                        {getOwnerAddress(continentSelected)}
-                      </span>
-                      <br />
-                      if you don&apos;t recognise this address consider another
-                      continent.
-                    </div>
+                    <span>
+                      Owner:
+                      <Address
+                        text={getOwnerAddress(continentSelected)}
+                        className="max-w-20"
+                      />
+                    </span>
                   )}
               </div>
             </div>
