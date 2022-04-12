@@ -229,7 +229,17 @@ const Home: NextPage = () => {
   };
 
   return accountLoading || networkLoading || continentLoading ? (
-    <>Loading...</>
+    <>
+      <Header
+        address={accountData?.address}
+        networkData={networkData}
+        connectors={connectData.connectors}
+        handleConnect={handleConnect}
+        handleDisconnect={handleDisconnect}
+        handleSwitchNetwork={handleSwitchNetwork}
+      />
+      Loading...
+    </>
   ) : (
     <>
       <ReactTooltip backgroundColor="#0F172A">{tooltipContent}</ReactTooltip>
