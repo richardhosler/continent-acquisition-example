@@ -1,4 +1,3 @@
-import Davatar from "@davatar/react";
 import { Connector } from "wagmi";
 import { Button } from "./Button";
 import { Address } from "./Address";
