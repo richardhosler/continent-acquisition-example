@@ -6,6 +6,7 @@ import MapChart from "../components/MapChart";
 import { Result } from "ethers/lib/utils";
 import ReactTooltip from "react-tooltip";
 import "regenerator-runtime/runtime";
+import "react-loading-skeleton/dist/skeleton.css";
 import { object, string } from "yup";
 import type { NextPage } from "next";
 import { Field, Form, Formik, FormikHelpers } from "formik";
@@ -70,11 +71,10 @@ const Home: NextPage = () => {
     { data: continentData, error: continentError, loading: continentLoading },
     readContinents,
   ] = useContractRead(contract, "allContinentsStatus", { skip: true });
-  const [{ data: priceData, error: priceError }, readPrice] = useContractRead(
-    contract,
-    "getCurrentPrice",
-    { skip: true }
-  );
+  const [
+    { data: priceData, loading: priceLoading, error: priceError },
+    readPrice,
+  ] = useContractRead(contract, "getCurrentPrice", { skip: true });
   const [{ error: relinquishContinentError }, relinquishContinentCall] =
     useContractWrite(contract, "relinquishContinent");
   const [{ error: transferContinentError }, transferContinentCall] =
@@ -228,7 +228,10 @@ const Home: NextPage = () => {
     ),
   };
 
-  return accountLoading || networkLoading || continentLoading ? (
+  return accountLoading ||
+    networkLoading ||
+    continentLoading ||
+    priceLoading ? (
     <>
       <Header
         address={accountData?.address}
@@ -250,6 +253,7 @@ const Home: NextPage = () => {
         handleConnect={handleConnect}
         handleDisconnect={handleDisconnect}
         handleSwitchNetwork={handleSwitchNetwork}
+        currentPrice={gweiFormatter(priceData?.toString())}
       />
       {connectData.connected && continentData && (
         <MapChart
@@ -352,8 +356,8 @@ const Home: NextPage = () => {
                                   <Field
                                     id="address"
                                     name="address"
-                                    placeholder="recipient address..."
-                                    className="text-slate-900 bg-white border-2 border-slate-300 rounded-sm"
+                                    placeholder="Recipient address"
+                                    className="text-slate-900 bg-white border-2 border-slate-300 rounded-sm px-2"
                                   />
                                   <Button
                                     type="submit"
@@ -376,13 +380,10 @@ const Home: NextPage = () => {
                   getOwnerAddress(continentSelected).toString() !==
                     "0x0000000000000000000000000000000000000000" && (
                     /* continent owned by elseone */
-                    <span>
-                      Owner:
-                      <Address
-                        text={getOwnerAddress(continentSelected)}
-                        className="max-w-20"
-                      />
-                    </span>
+                    <Address
+                      text={getOwnerAddress(continentSelected)}
+                      className="max-w-20"
+                    />
                   )}
               </div>
             </div>
