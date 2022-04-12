@@ -1,7 +1,7 @@
 import { useQuery } from "react-query";
 import { twMerge } from "tailwind-merge";
 import { getContinentName } from "../utils/getContinentName";
-import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+import Skeleton from "react-loading-skeleton";
 import { numberFormatter } from "../utils/numberFormatter";
 import { CountryInterface } from "../utils/restCountriesUtils";
 
@@ -43,22 +43,14 @@ export const ContinentInfo = ({
   return (
     <div className={classes}>
       <div className="text-4xl">
-        {isLoading ? (
-          <Skeleton width={240} height="100%"></Skeleton>
-        ) : (
-          data && data[0].subregion
-        )}
+        {isLoading ? <Skeleton /> : data && data[0].subregion}
       </div>
 
       {fieldList.find((field) => field === "population") && (
         <div>
           Population
           <div className="font-semibold text-2xl">
-            {isLoading ? (
-              <Skeleton width={120}></Skeleton>
-            ) : (
-              numberFormatter(population)
-            )}
+            {isLoading ? <Skeleton /> : numberFormatter(population)}
           </div>
         </div>
       )}
@@ -67,11 +59,7 @@ export const ContinentInfo = ({
         <div>
           Area (km{"\u00B2"})
           <div className="font-semibold text-2xl">
-            {isLoading ? (
-              <Skeleton width={120}></Skeleton>
-            ) : (
-              numberFormatter(area)
-            )}
+            {isLoading ? <Skeleton /> : numberFormatter(area)}
           </div>
         </div>
       )}
