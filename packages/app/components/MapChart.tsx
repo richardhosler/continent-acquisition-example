@@ -76,7 +76,7 @@ const MapChart = ({
                 },
               }}
               onMouseEnter={() => {
-                onTooltipChange(`some content on ${geo.properties.continent}`);
+                onTooltipChange(geo.properties.continent);
               }}
               onMouseLeave={() => {
                 onTooltipChange("");
