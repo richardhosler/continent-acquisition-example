@@ -232,7 +232,7 @@ const Home: NextPage = () => {
     <>Loading...</>
   ) : (
     <>
-      <ReactTooltip>{tooltipContent}</ReactTooltip>
+      <ReactTooltip backgroundColor="#0F172A">{tooltipContent}</ReactTooltip>
       <Header
         address={accountData?.address}
         networkData={networkData}
