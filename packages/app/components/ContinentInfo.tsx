@@ -1,24 +1,16 @@
 import { useQuery } from "react-query";
 import { twMerge } from "tailwind-merge";
 import { getContinentName } from "../utils/getContinentName";
-import { FlagDisplay } from "./FlagDisplay";
+import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import { numberFormatter } from "../utils/numberFormatter";
+import { CountryInterface } from "../utils/restCountriesUtils";
 
 interface ContinentInfoInterface {
   continentSelected: string;
   fieldList?: string[];
   className?: string;
 }
-interface CountryInterface {
-  name: string;
-  capital: string;
-  population: number;
-  area: number;
-  currencies: string[];
-  languages: string[];
-  flag: string;
-  region: string;
-}
+
 export const ContinentInfo = ({
   continentSelected,
   fieldList = ["population", "area", "region"],
@@ -27,7 +19,7 @@ export const ContinentInfo = ({
   const fetchURL = `https://restcountries.com/v3.1/region/${getContinentName({
     continentSelected,
   })}`;
-  const { data } = useQuery<CountryInterface[], Error>(
+  const { data, isLoading } = useQuery<CountryInterface[], Error>(
     ["Region", continentSelected],
     () => fetch(fetchURL).then((res) => res.json())
   );
@@ -45,19 +37,28 @@ export const ContinentInfo = ({
         .map((country) => country.area)
         .reduce((a: number, b: number) => a + b, 0)
     );
-  const flags = data?.map((country) => country.flag);
   const currencyObjects = data?.map((country) => country.currencies);
-
   let classes = twMerge("h-80 space-y-3", className);
+
   return (
     <div className={classes}>
-      <div className="text-5xl">{data && data[0].region}</div>
+      <div className="text-4xl">
+        {isLoading ? (
+          <Skeleton width={240} height="100%"></Skeleton>
+        ) : (
+          data && data[0].subregion
+        )}
+      </div>
 
       {fieldList.find((field) => field === "population") && (
         <div>
           Population
           <div className="font-semibold text-2xl">
-            {numberFormatter(population)}
+            {isLoading ? (
+              <Skeleton width={120}></Skeleton>
+            ) : (
+              numberFormatter(population)
+            )}
           </div>
         </div>
       )}
@@ -65,19 +66,14 @@ export const ContinentInfo = ({
       {fieldList.find((field) => field === "area") && (
         <div>
           Area (km{"\u00B2"})
-          <div className="font-semibold text-2xl">{numberFormatter(area)}</div>
+          <div className="font-semibold text-2xl">
+            {isLoading ? (
+              <Skeleton width={120}></Skeleton>
+            ) : (
+              numberFormatter(area)
+            )}
+          </div>
         </div>
-      )}
-
-      {fieldList.find((field) => field === "flags") && flags && (
-        <div>
-          Flags:
-          <FlagDisplay flags={flags} className="px-2" />
-        </div>
-      )}
-
-      {fieldList.find((field) => field === "currencies") && (
-        <div>Currencies:&nbsp;{}</div>
       )}
     </div>
   );

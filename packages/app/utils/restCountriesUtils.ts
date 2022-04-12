@@ -9,6 +9,7 @@ export interface CountryInterface {
   area: number;
   currencies: currencyInterface;
   languages: {}[];
+  flag: string;
   flags: flagsInterface;
   subregion: string;
 }
