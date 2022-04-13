@@ -48,7 +48,7 @@ export const Header = ({
         {/* {networkData.chain?.name ?? networkData.chain?.id}{' '}
         {networkData.chain?.unsupported && '(unsupported)'} */}
         {/* <DarkModeToggle /> */}
-        <div className="space-x-2 place-self-center">
+        <div className="space-x-2 relative -left-1/3">
           <span>{currentPrice?.amount}</span>
           <span>{currentPrice?.symbol}</span>
         </div>
