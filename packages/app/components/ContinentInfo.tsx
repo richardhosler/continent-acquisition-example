@@ -38,12 +38,18 @@ export const ContinentInfo = ({
         .reduce((a: number, b: number) => a + b, 0)
     );
   const currencyObjects = data?.map((country) => country.currencies);
-  let classes = twMerge("h-80 space-y-3", className);
+  let classes = twMerge("h-80 space-y-3 bg-white", className);
 
   return (
     <div className={classes}>
       <div className="text-4xl">
-        {isLoading ? <Skeleton /> : data && data[0].subregion}
+        {isLoading ? (
+          <Skeleton />
+        ) : data && data[0].subregion !== "Eastern Europe" ? (
+          data[0].subregion
+        ) : (
+          data && data[0].region
+        )}
       </div>
 
       {fieldList.find((field) => field === "population") && (
