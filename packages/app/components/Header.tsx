@@ -5,6 +5,8 @@ import metamaskIcon from "../assets/icons/metamask.svg";
 import walletconnectIcon from "../assets/icons/walletconnect.svg";
 import { twMerge } from "tailwind-merge";
 import { CurrencyInterface } from "../utils/gweiFormatter";
+import headerLogo from "../assets/icons/globe.svg";
+import Image from "next/image";
 interface HeaderInterface {
   address: string | undefined;
   connectors: Connector[];
@@ -38,20 +40,26 @@ export const Header = ({
   };
 
   const classes = twMerge(
-    "flex flex-inline fixed w-full place-content-end place-items-center p-2 space-x-2 bg-slate-800 text-slate-100",
+    "flex flex-inline fixed w-full place-content-end place-items-stretch p-2 space-x-2 bg-slate-800 text-slate-100",
     className
   );
 
   return (
     <>
       <div className={classes}>
-        {/* {networkData.chain?.name ?? networkData.chain?.id}{' '}
-        {networkData.chain?.unsupported && '(unsupported)'} */}
-        {/* <DarkModeToggle /> */}
-        <div className="space-x-2 relative -left-1/3">
+        <div className="absolute left-2.5 top-2.5 space-x-3">
+          <Image src={headerLogo} alt="Header Logo" width={30} height={30} />
+          <span className="align-top font-semibold text-lg">
+            Continent Aquisition Demo
+          </span>
+        </div>
+        <div className="space-x-2 relative right-1/3 top-1">
           <span>{currentPrice?.amount}</span>
           <span>{currentPrice?.symbol}</span>
         </div>
+        {/* {networkData.chain?.name ?? networkData.chain?.id}{' '}
+        {networkData.chain?.unsupported && '(unsupported)'} */}
+        {/* <DarkModeToggle /> */}
         {/* if not connected to a wallet */}
         {address === undefined ? (
           connectors.map((connector: Connector) => (

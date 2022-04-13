@@ -45,6 +45,12 @@ import { twMerge } from "tailwind-merge";
 import chevron from "../assets/icons/chevron.svg";
 import { MouseEventHandler } from "react";
 import { flavourText } from "../utils/getFlavourText";
+enum Status {
+  OwnedByYou,
+  OwnedBySomeoneElse,
+  Unowned,
+}
+
 interface Values {
   address: string;
 }
@@ -80,9 +86,15 @@ const Home: NextPage = () => {
     useContractWrite(contract, "transferContinent");
   const [{ error: acquireContinentError }, acquireContractCall] =
     useContractWrite(contract, "acquireContinent");
-  const [{ data: transactionData, error: transactionError }, wait] =
-    useWaitForTransaction({ skip: true });
-
+  const [
+    {
+      data: transactionData,
+      loading: transactionLoading,
+      error: transactionError,
+    },
+    wait,
+  ] = useWaitForTransaction({ skip: true });
+  const [submitDisabled, setSubmitDisabled] = useState(false);
   const [modalIsOpen, setIsOpen] = useState(false);
 
   const schema = object({
@@ -121,13 +133,25 @@ const Home: NextPage = () => {
       wait({ hash: transaction.data.hash });
     }
   };
-  const callRelinquishContinent = (ISO: string) => {
-    relinquishContinentCall({ args: convertStringToByteArray({ s: ISO }) });
+  const callRelinquishContinent = async (ISO: string) => {
+    const transaction = await relinquishContinentCall({
+      args: convertStringToByteArray({ s: ISO }),
+    });
+    if (transaction.data?.hash) {
+      wait({ hash: transaction.data.hash });
+    }
   };
-  const callTransferContinent = (from: string, to: string, ISO: string) => {
-    transferContinentCall({
+  const callTransferContinent = async (
+    from: string,
+    to: string,
+    ISO: string
+  ) => {
+    const transaction = await transferContinentCall({
       args: [from, to, convertStringToByteArray({ s: ISO })],
     });
+    if (transaction.data?.hash) {
+      wait({ hash: transaction.data.hash });
+    }
   };
   const handleDisconnect = () => {
     disconnect();
@@ -142,7 +166,16 @@ const Home: NextPage = () => {
       readContinents();
       readPrice();
     }
-  }, [connectData.connected, transactionData, readContinents, readPrice]);
+    if (!transactionLoading) {
+      setSubmitDisabled(false);
+    }
+  }, [
+    connectData.connected,
+    transactionData,
+    readContinents,
+    readPrice,
+    transactionLoading,
+  ]);
   useEffect(() => {
     if (
       [
@@ -204,6 +237,18 @@ const Home: NextPage = () => {
         return " ";
     }
   };
+  const getContinentStatus = (continent: string): Status => {
+    if (
+      getOwnerAddress(continent) ===
+      "0x0000000000000000000000000000000000000000"
+    ) {
+      return Status.Unowned;
+    } else if (getOwnerAddress(continent) === accountData?.address) {
+      return Status.OwnedByYou;
+    } else {
+      return Status.OwnedBySomeoneElse;
+    }
+  };
   const fetchURL = `https://restcountries.com/v3.1/region/${getContinentName({
     continentSelected,
   })}`;
@@ -214,6 +259,7 @@ const Home: NextPage = () => {
   );
 
   Modal.setAppElement("#__next");
+
   const NextArrow = (props: {
     className?: string;
     style?: React.CSSProperties;
@@ -264,9 +310,7 @@ const Home: NextPage = () => {
     slidesToScroll: 1,
     arrows: true,
     nextArrow: <NextArrow />,
-    prevArrow: (
-      <PrevArrow className="bg-slate-900 text-lg text-slate-100 z-10 left-5" />
-    ),
+    prevArrow: <PrevArrow />,
   };
 
   return accountLoading ||
@@ -307,7 +351,14 @@ const Home: NextPage = () => {
         />
       )}
       <Modal
+        id="modal"
         isOpen={modalIsOpen}
+        shouldFocusAfterRender={true}
+        shouldCloseOnOverlayClick={true}
+        shouldCloseOnEsc={true}
+        onAfterOpen={() => {
+          document.getElementById("modal")?.focus();
+        }}
         onRequestClose={() => setIsOpen(false)}
         contentLabel="Modal"
         className="w-3/6 absolute left-1/4 top-1/4 bg-slate-100 rounded-lg shadow-lg max-h-80 overflow-hidden"
@@ -330,15 +381,15 @@ const Home: NextPage = () => {
 
               <div className="flex flex-col place-content-between p-6 col-span-3">
                 <div className="mb-6">{flavourText(continentSelected)}</div>
-                {getOwnerAddress(continentSelected) ===
-                  "0x0000000000000000000000000000000000000000" && (
-                  /* continent is not owned */
+                {getContinentStatus(continentSelected) === Status.Unowned && (
                   <div>
                     <Button
-                      className="bg-lime-600 hover:bg-lime-400 text-white font-bold py-2 px-4 float-right"
-                      onClick={async () =>
-                        callAcquireContinent(continentSelected, priceData)
-                      }
+                      className="bg-lime-600 hover:bg-lime-500 focus:bg-lime-400 text-white font-bold py-2 px-4 float-right"
+                      onClick={async () => {
+                        callAcquireContinent(continentSelected, priceData);
+                        setSubmitDisabled(true);
+                      }}
+                      disabled={submitDisabled}
                     >
                       <div className="flex space-x-2">
                         <span className="font-normal">
@@ -350,82 +401,87 @@ const Home: NextPage = () => {
                     </Button>
                   </div>
                 )}
-                {continentSelected &&
-                  getOwnerAddress(continentSelected).toString() ===
-                    accountData?.address && (
-                    /* you own continent */
-                    <div className="">
-                      <Formik
-                        initialValues={{
-                          address: "",
-                        }}
-                        onSubmit={(
-                          values: Values,
-                          { setSubmitting }: FormikHelpers<Values>
-                        ) => {
-                          () => {
-                            if (accountData) {
-                              callTransferContinent(
-                                accountData.address,
-                                values.address,
-                                continentSelected
-                              );
-                            }
-                            setSubmitting(false);
-                          };
-                        }}
-                        validationSchema={schema}
-                      >
-                        {(props) => {
-                          return (
-                            <span className="flex">
-                              <Button
-                                className="float-left bg-red-600 hover:bg-red-500 text-white"
-                                onClick={() =>
-                                  callRelinquishContinent(continentSelected)
-                                }
-                              >
-                                Relinquish
-                              </Button>
-                              <Form className="w-full">
-                                <div className="align-text-top flex place-content-between">
-                                  <div className="text-red-600 inline-block">
-                                    &nbsp;&nbsp;
-                                    {props.errors.address &&
-                                      props.errors.address}
-                                  </div>
-                                  <Field
-                                    id="address"
-                                    name="address"
-                                    placeholder="Recipient address"
-                                    className="text-slate-900 bg-white border-2 border-slate-300 rounded-sm px-2"
-                                  />
-                                  <Button
-                                    type="submit"
-                                    disabled={!(props.isValid && props.dirty)}
-                                    className="bg-lime-600 hover:bg-lime-400 text-white float-right"
-                                  >
-                                    Transfer
-                                  </Button>
+                {getContinentStatus(continentSelected) ===
+                  Status.OwnedByYou && (
+                  <div className="">
+                    <Formik
+                      initialValues={{
+                        address: "",
+                      }}
+                      onSubmit={(
+                        values: Values,
+                        { setSubmitting }: FormikHelpers<Values>
+                      ) => {
+                        () => {
+                          if (accountData) {
+                            callTransferContinent(
+                              accountData.address,
+                              values.address,
+                              continentSelected
+                            );
+                          }
+                          setSubmitting(false);
+                        };
+                      }}
+                      validationSchema={schema}
+                    >
+                      {(props) => {
+                        return (
+                          <span className="flex space-x-4">
+                            <Button
+                              className="float-left bg-red-600 hover:bg-red-500 focus:bg-red-400 text-white"
+                              onClick={() => {
+                                callRelinquishContinent(continentSelected);
+                                setSubmitDisabled(true);
+                              }}
+                              disabled={submitDisabled}
+                            >
+                              Relinquish
+                            </Button>
+                            <Form className="flex">
+                              <div className="align-text-top flex place-content-between space-x-2">
+                                <div className="text-red-600 absolute bottom-20 pl-4">
+                                  {props.errors.address && props.errors.address}
                                 </div>
-                              </Form>
-                            </span>
-                          );
-                        }}
-                      </Formik>
-                    </div>
-                  )}
-                {continentSelected &&
-                  getOwnerAddress(continentSelected).toString() !==
-                    accountData?.address &&
-                  getOwnerAddress(continentSelected).toString() !==
-                    "0x0000000000000000000000000000000000000000" && (
-                    /* continent owned by elseone */
-                    <Address
-                      text={getOwnerAddress(continentSelected)}
-                      className="max-w-20"
-                    />
-                  )}
+                                <Field
+                                  id="address"
+                                  name="address"
+                                  placeholder="Recipient address"
+                                  className="text-slate-900 bg-white border-2 border-slate-300 rounded-sm px-2"
+                                />
+                                <Button
+                                  type="submit"
+                                  disabled={!(props.isValid && props.dirty)}
+                                  className="bg-lime-600 hover:bg-lime-400 text-white float-right"
+                                >
+                                  Transfer
+                                </Button>
+                              </div>
+                            </Form>
+                          </span>
+                        );
+                      }}
+                    </Formik>
+                  </div>
+                )}
+                {getContinentStatus(continentSelected) ===
+                  Status.OwnedBySomeoneElse && (
+                  <span>
+                    <Address text={getOwnerAddress(continentSelected)} />
+                    <Button
+                      className="bg-lime-600 hover:bg-lime-500 focus:bg-lime-400 text-white font-bold py-2 px-4 float-right"
+                      disabled={true}
+                    >
+                      <div className="flex space-x-2">
+                        <span className="font-normal">
+                          {gweiFormatter(priceData?.toString()).amount}
+                          {gweiFormatter(priceData?.toString()).symbol}
+                        </span>
+                        <span>BUY</span>
+                      </div>
+                    </Button>
+                  </span>
+                )}
               </div>
             </div>
           </div>
