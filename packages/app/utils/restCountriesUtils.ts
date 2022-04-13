@@ -11,6 +11,7 @@ export interface CountryInterface {
   languages: {}[];
   flag: string;
   flags: flagsInterface;
+  region: string;
   subregion: string;
 }
 interface flagsInterface {
