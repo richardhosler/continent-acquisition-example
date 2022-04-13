@@ -5,7 +5,7 @@ interface ButtonInterface {
   onClick?: () => void;
   className?: string;
   disabled?: boolean;
-  type?: string;
+  type?: "button" | "submit" | "reset" | undefined;
   icon?: string;
   children?: React.ReactNode;
   iconClassName?: string;
@@ -17,7 +17,7 @@ export const Button = ({
   onClick,
   className,
   disabled,
-  type,
+  type = "button",
   children,
   icon,
   iconClassName,
@@ -25,12 +25,17 @@ export const Button = ({
   iconHeight = 18,
 }: ButtonInterface): JSX.Element => {
   const buttonClasses = twMerge(
-    "inline-flex text-slate-100 bg-slate-700 hover:bg-slate-600 focus:bg-slate-500 font-medium rounded-sm text-sm px-3 py-2 space-x-2",
+    "inline-flex text-slate-100 bg-slate-700 hover:bg-slate-600 focus:bg-slate-500 disabled:bg-stone-700 font-medium rounded-sm text-sm px-3 py-2 space-x-2",
     className
   );
 
   return (
-    <button className={buttonClasses} onClick={onClick} disabled={disabled}>
+    <button
+      className={buttonClasses}
+      onClick={onClick}
+      disabled={disabled}
+      type={type && type}
+    >
       {icon && (
         <Image
           width={iconWidth}
