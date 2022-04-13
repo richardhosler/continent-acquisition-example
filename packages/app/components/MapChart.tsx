@@ -2,7 +2,7 @@ import React, { memo } from "react";
 import mapData from "../assets/world-110m.json";
 import { ComposableMap, Geographies, Geography } from "react-simple-maps";
 import { Result } from "ethers/lib/utils";
-import { getContinentId } from "../utils/getContinentId";
+import { getContinentId } from "../utils/getContinentData";
 import colors from "tailwindcss/colors";
 interface MapChartInterface {
   onTooltipChange: (content: string) => void;

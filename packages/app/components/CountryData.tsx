@@ -1,4 +1,4 @@
-import { CountryInterface } from "../utils/restCountriesUtils";
+import { CountryInterface } from "../utils/restCountriesInterface";
 import { createTable, sortRowsFn, useTable } from "@tanstack/react-table";
 import { useState, useMemo } from "react";
 import Image from "next/image";
@@ -49,7 +49,7 @@ export const CountryDataView = ({
     state: {
       sorting,
     },
-    onSortingChange: setSorting,
+    // onSortingChange: setSorting,
     sortRowsFn: sortRowsFn,
   });
 

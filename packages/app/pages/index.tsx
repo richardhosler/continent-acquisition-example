@@ -22,40 +22,53 @@ import {
 } from "wagmi";
 import continentToken from "../../contract/build/ContinentToken.json";
 import { convertStringToByteArray } from "../utils/convertStringToByteArray";
-import { getContinentId } from "../utils/getContinentId";
 import { gweiFormatter } from "../utils/gweiFormatter";
 import { Header } from "../components/Header";
 import { Button } from "../components/Button";
 import { Address } from "../components/Address";
 import { ContinentInfo } from "../components/ContinentInfo";
-import africaImage from "../public/images/africa.jpg";
-import asiaImage from "../public/images/asia.jpg";
-import europeImage from "../public/images/europe.jpg";
-import northAmericaImage from "../public/images/north-america.jpg";
-import southAmericaImage from "../public/images/south-america.jpg";
-import oceaniaImage from "../public/images/oceania.jpg";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
 import { CountryDataView } from "../components/CountryData";
 import { useQuery } from "react-query";
-import { getContinentName } from "../utils/getContinentName";
-import { CountryInterface } from "../utils/restCountriesUtils";
+import { CountryInterface } from "../utils/restCountriesInterface";
 import { twMerge } from "tailwind-merge";
 import chevron from "../assets/icons/chevron.svg";
 import { MouseEventHandler } from "react";
-import { flavourText } from "../utils/getFlavourText";
+import {
+  getContinentId,
+  getContinentName,
+  getCoverImage,
+  flavourText,
+} from "../utils/getContinentData";
+
 enum Status {
   OwnedByYou,
   OwnedBySomeoneElse,
   Unowned,
 }
-
 interface Values {
   address: string;
 }
 const Home: NextPage = () => {
   const provider = useProvider();
+  const contract = {
+    addressOrName: "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+    contractInterface: continentToken.abi,
+    signerOrProvider: provider,
+  };
+  const schema = object({
+    address: string()
+      .trim()
+      .matches(/^0x[0-9a-f]{40}$/i, "Invalid Etherium address.")
+      .test(
+        "isYours",
+        "You already own this.",
+        (value) => value !== accountData?.address
+      )
+      .required(),
+  });
   const [tooltipContent, setTooltipContent] = useState("");
   const [continentSelected, setContinent] = useState("");
   const [{ data: connectData, error: connectError }, connect] = useConnect();
@@ -67,11 +80,6 @@ const Home: NextPage = () => {
     { data: accountData, error: accountError, loading: accountLoading },
     disconnect,
   ] = useAccount();
-  const contract = {
-    addressOrName: "0x5FbDB2315678afecb367f032d93F642f64180aa3",
-    contractInterface: continentToken.abi,
-    signerOrProvider: provider,
-  };
   const [
     { data: continentData, error: continentError, loading: continentLoading },
     readContinents,
@@ -94,20 +102,15 @@ const Home: NextPage = () => {
     },
     wait,
   ] = useWaitForTransaction({ skip: true });
-  const [submitDisabled, setSubmitDisabled] = useState(false);
-  const [modalIsOpen, setIsOpen] = useState(false);
+  const { data } = useQuery<CountryInterface[], Error>(
+    ["Region", continentSelected],
+    () => fetch(fetchURL).then((res) => res.json())
+  );
 
-  const schema = object({
-    address: string()
-      .trim()
-      .matches(/^0x[0-9a-f]{40}$/i, "Invalid Etherium address.")
-      .test(
-        "isYours",
-        "You already own this.",
-        (value) => value !== accountData?.address
-      )
-      .required(),
-  });
+  const [submitDisabled, setSubmitDisabled] = useState(false);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [dialogIsOpen, setDialogIsOpen] = useState(false);
+
   const handleTooltipChange = (content: string) => {
     ReactTooltip.rebuild();
     setTooltipContent(content);
@@ -157,9 +160,78 @@ const Home: NextPage = () => {
     disconnect();
     toast.error("Disconnected.");
   };
-
   const handleSwitchNetwork = (chainId: number) => {
     switchNetwork && switchNetwork(chainId);
+  };
+  const getContinentStatus = (continent: string): Status => {
+    if (
+      getOwnerAddress(continent) ===
+      "0x0000000000000000000000000000000000000000"
+    ) {
+      return Status.Unowned;
+    } else if (getOwnerAddress(continent) === accountData?.address) {
+      return Status.OwnedByYou;
+    } else {
+      return Status.OwnedBySomeoneElse;
+    }
+  };
+  const fetchURL = `https://restcountries.com/v3.1/region/${getContinentName({
+    continentSelected,
+  })}`;
+
+  Modal.setAppElement("#__next");
+
+  const NextArrow = (props: {
+    className?: string;
+    style?: React.CSSProperties;
+    onClick?: MouseEventHandler;
+  }) => {
+    const { className, style, onClick } = props;
+
+    return (
+      <div
+        className={twMerge(
+          className,
+          "bg-slate-900 text-lg text-slate-100 z-10 x-5 w-10"
+        )}
+        onClick={onClick}
+        style={{ ...style, display: "block", background: "green" }}
+      >
+        <Image src={chevron} alt="next slide" />
+      </div>
+    );
+  };
+
+  const PrevArrow = (props: {
+    className?: string;
+    style?: React.CSSProperties;
+    onClick?: MouseEventHandler;
+  }) => {
+    const { className, style, onClick } = props;
+    return (
+      <div
+        className={twMerge(
+          className,
+          "bg-slate-900 text-lg text-slate-100 z-10 x-5"
+        )}
+        onClick={onClick}
+        style={{ ...style, display: "block", background: "green" }}
+      >
+        chevron
+        <Image src={chevron} alt="next slide" />
+      </div>
+    );
+  };
+
+  const sliderSettings = {
+    dots: false,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    arrows: true,
+    nextArrow: <NextArrow />,
+    prevArrow: <PrevArrow />,
   };
   useEffect(() => {
     if (connectData.connected) {
@@ -218,100 +290,6 @@ const Home: NextPage = () => {
     acquireContinentError,
     transactionError,
   ]);
-  const getCoverImage = (ISO: string): StaticImageData | string => {
-    const continentId = getContinentId(ISO);
-    switch (continentId) {
-      case 0:
-        return africaImage;
-      case 1:
-        return asiaImage;
-      case 2:
-        return europeImage;
-      case 3:
-        return northAmericaImage;
-      case 4:
-        return southAmericaImage;
-      case 5:
-        return oceaniaImage;
-      default:
-        return " ";
-    }
-  };
-  const getContinentStatus = (continent: string): Status => {
-    if (
-      getOwnerAddress(continent) ===
-      "0x0000000000000000000000000000000000000000"
-    ) {
-      return Status.Unowned;
-    } else if (getOwnerAddress(continent) === accountData?.address) {
-      return Status.OwnedByYou;
-    } else {
-      return Status.OwnedBySomeoneElse;
-    }
-  };
-  const fetchURL = `https://restcountries.com/v3.1/region/${getContinentName({
-    continentSelected,
-  })}`;
-
-  const { data } = useQuery<CountryInterface[], Error>(
-    ["Region", continentSelected],
-    () => fetch(fetchURL).then((res) => res.json())
-  );
-
-  Modal.setAppElement("#__next");
-
-  const NextArrow = (props: {
-    className?: string;
-    style?: React.CSSProperties;
-    onClick?: MouseEventHandler;
-  }) => {
-    const { className, style, onClick } = props;
-
-    return (
-      <div
-        className={twMerge(
-          className,
-          "bg-slate-900 text-lg text-slate-100 z-10 x-5 w-10"
-        )}
-        onClick={onClick}
-        style={{ ...style, display: "block", background: "green" }}
-      >
-        <Image src={chevron} alt="next slide" />
-      </div>
-    );
-  };
-
-  const PrevArrow = (props: {
-    className?: string;
-    style?: React.CSSProperties;
-    onClick?: MouseEventHandler;
-  }) => {
-    const { className, style, onClick } = props;
-    return (
-      <div
-        className={twMerge(
-          className,
-          "bg-slate-900 text-lg text-slate-100 z-10 x-5"
-        )}
-        onClick={onClick}
-        style={{ ...style, display: "block", background: "green" }}
-      >
-        chevron
-        <Image src={chevron} alt="next slide" />
-      </div>
-    );
-  };
-
-  const sliderSettings = {
-    dots: false,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    arrows: true,
-    nextArrow: <NextArrow />,
-    prevArrow: <PrevArrow />,
-  };
 
   return accountLoading ||
     networkLoading ||
@@ -343,13 +321,32 @@ const Home: NextPage = () => {
       {connectData.connected && continentData && (
         <MapChart
           setContinent={setContinent}
-          setIsOpen={setIsOpen}
+          setIsOpen={setModalIsOpen}
           onTooltipChange={handleTooltipChange}
           contractData={continentData}
           accountData={accountData}
           readContractData={readContinents}
         />
       )}
+      <Modal
+        id="dialog"
+        isOpen={dialogIsOpen}
+        shouldFocusAfterRender={true}
+        shouldCloseOnOverlayClick={false}
+        shouldCloseOnEsc={false}
+        onAfterOpen={() => {
+          document.getElementById("dialog")?.focus();
+        }}
+        onRequestClose={() => setDialogIsOpen(false)}
+        contentLabel="Confirmation Dialog"
+        className="mx-auto"
+      >
+        <div className="flex">Confirm</div>
+        <div className="flex">
+          <Button onClick={() => null}>Confirm</Button>
+          <Button onClick={() => null}>Cancel</Button>
+        </div>
+      </Modal>
       <Modal
         id="modal"
         isOpen={modalIsOpen}
@@ -359,7 +356,7 @@ const Home: NextPage = () => {
         onAfterOpen={() => {
           document.getElementById("modal")?.focus();
         }}
-        onRequestClose={() => setIsOpen(false)}
+        onRequestClose={() => setModalIsOpen(false)}
         contentLabel="Modal"
         className="w-3/6 absolute left-1/4 top-1/4 bg-slate-100 rounded-lg shadow-lg max-h-80 overflow-hidden"
       >
