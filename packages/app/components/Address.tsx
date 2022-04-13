@@ -18,7 +18,7 @@ export const Address = ({
   handleTooltipChange,
 }: AddressInterface): JSX.Element => {
   const classes = twMerge(
-    "flex inline-flex rounded-sm text-slate-900 bg-slate-200 hover:bg-slate-100 w-min px-3 py-1.5 text-sm space-x-3 place-items-center",
+    "flex inline-flex rounded-sm text-slate-900 bg-slate-200 hover:bg-slate-100 w-min px-3 py-1.5 text-sm space-x-3 place-items-center cursor-pointer",
     className
   );
   const style = {
@@ -34,6 +34,9 @@ export const Address = ({
       }}
       onMouseLeave={() => {
         handleTooltipChange && handleTooltipChange("");
+      }}
+      onClick={() => {
+        window.open(`https://etherscan.io/address/${text}`);
       }}
     >
       <Davatar size={24} address={text} style={style} />
