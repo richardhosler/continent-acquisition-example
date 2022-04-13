@@ -1,9 +1,9 @@
 import { useQuery } from "react-query";
 import { twMerge } from "tailwind-merge";
-import { getContinentName } from "../utils/getContinentName";
+import { getContinentName } from "../utils/getContinentData";
 import Skeleton from "react-loading-skeleton";
 import { numberFormatter } from "../utils/numberFormatter";
-import { CountryInterface } from "../utils/restCountriesUtils";
+import { CountryInterface } from "../utils/restCountriesInterface";
 
 interface ContinentInfoInterface {
   continentSelected: string;
