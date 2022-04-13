@@ -3,8 +3,7 @@ import mapData from "../assets/world-110m.json";
 import { ComposableMap, Geographies, Geography } from "react-simple-maps";
 import { Result } from "ethers/lib/utils";
 import { getContinentId } from "../utils/getContinentId";
-import resolveConfig from "tailwindcss/resolveConfig";
-import tailwindConfig from "./../tailwind.config.js";
+import colors from "tailwindcss/colors";
 interface MapChartInterface {
   onTooltipChange: (content: string) => void;
   contractData: Result;
@@ -13,7 +12,6 @@ interface MapChartInterface {
   setIsOpen: (isOpen: boolean) => void;
   setContinent: (continent: string) => void;
 }
-
 const MapChart = ({
   contractData,
   onTooltipChange,
@@ -21,7 +19,6 @@ const MapChart = ({
   setIsOpen,
   setContinent,
 }: MapChartInterface) => {
-  const fullConfig = resolveConfig(tailwindConfig);
   const getOwnerAddress = (ISO: string): string | null => {
     return getContinentId(ISO) != -1
       ? contractData[getContinentId(ISO)][1]
@@ -32,20 +29,20 @@ const MapChart = ({
     if (hover) {
       switch (getOwnerAddress(ISO)) {
         case accountData.address:
-          return "#FFFF77";
+          return colors.yellow["500"];
         case "0x0000000000000000000000000000000000000000":
-          return "#77FF77";
+          return colors.green["500"];
         default:
-          return "#FF7777";
+          return colors.red["500"];
       }
     } else {
       switch (getOwnerAddress(ISO)) {
         case accountData.address:
-          return "#FFFF00";
+          return colors.yellow["600"];
         case "0x0000000000000000000000000000000000000000":
-          return "#00FF00";
+          return colors.green["600"];
         default:
-          return "#FF0000";
+          return colors.red["600"];
       }
     }
   };
