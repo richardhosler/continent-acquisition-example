@@ -1,9 +1,10 @@
 import { useQuery } from "react-query";
 import { twMerge } from "tailwind-merge";
 import { getContinentName } from "../utils/getContinentData";
-import Skeleton from "react-loading-skeleton";
+import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import { numberFormatter } from "../utils/numberFormatter";
 import { CountryInterface } from "../utils/restCountriesInterface";
+import colors from "tailwindcss/colors";
 
 interface ContinentInfoInterface {
   continentSelected: string;
@@ -42,33 +43,43 @@ export const ContinentInfo = ({
 
   return (
     <div className={classes}>
-      <div className="text-4xl">
-        {isLoading ? (
-          <Skeleton />
-        ) : data && data[0].subregion !== "Eastern Europe" ? (
-          data[0].subregion
-        ) : (
-          data && data[0].region
+      <SkeletonTheme baseColor={colors.slate[600]}>
+        <div className="text-4xl">
+          {isLoading ? (
+            <Skeleton className="opacity-20" />
+          ) : data && data[0].subregion !== "Eastern Europe" ? (
+            data[0].subregion
+          ) : (
+            data && data[0].region
+          )}
+        </div>
+
+        {fieldList.find((field) => field === "population") && (
+          <div>
+            Population
+            <div className="font-semibold text-2xl">
+              {isLoading ? (
+                <Skeleton className="opacity-20" />
+              ) : (
+                numberFormatter(population)
+              )}
+            </div>
+          </div>
         )}
-      </div>
 
-      {fieldList.find((field) => field === "population") && (
-        <div>
-          Population
-          <div className="font-semibold text-2xl">
-            {isLoading ? <Skeleton /> : numberFormatter(population)}
+        {fieldList.find((field) => field === "area") && (
+          <div>
+            Area (km{"\u00B2"})
+            <div className="font-semibold text-2xl">
+              {isLoading ? (
+                <Skeleton className="opacity-20" />
+              ) : (
+                numberFormatter(area)
+              )}
+            </div>
           </div>
-        </div>
-      )}
-
-      {fieldList.find((field) => field === "area") && (
-        <div>
-          Area (km{"\u00B2"})
-          <div className="font-semibold text-2xl">
-            {isLoading ? <Skeleton /> : numberFormatter(area)}
-          </div>
-        </div>
-      )}
+        )}
+      </SkeletonTheme>
     </div>
   );
 };
