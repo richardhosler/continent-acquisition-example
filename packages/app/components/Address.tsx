@@ -25,7 +25,7 @@ export const Address = ({
     className
   );
 
-  return text.match(/0{40}/) ? (
+  return !text || text.match(/0{40}/) ? (
     <span className={classes}>NONE</span>
   ) : (
     <a

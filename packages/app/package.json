@@ -9,7 +9,11 @@
     "start": "next start",
     "lint": "next lint"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@types/react-loader-spinner": "^4.0.0",
+    "react-loader-spinner": "^6.0.0-0",
+    "remove": "^0.1.5"
+  },
   "devDependencies": {
     "@3rdweb/hooks": "^1.9.2",
     "@davatar/react": "^1.9.0",
@@ -19,6 +23,7 @@
     "@types/react": "^17.0.40",
     "@types/react-blockies": "^1.4.1",
     "@types/react-dom": "^17.0.13",
+    "@types/react-loader-spinner": "^4.0.0",
     "@types/react-modal": "^3.13.1",
     "@types/react-simple-maps": "^1.0.8",
     "@types/react-slick": "^0.23.8",
@@ -39,6 +44,7 @@
     "react": "^18.0.0",
     "react-dom": "17.0.2",
     "react-hot-toast": "^2.2.0",
+    "react-loader-spinner": "^6.0.0-0",
     "react-loading-skeleton": "^3.1.0",
     "react-modal": "^3.14.4",
     "react-query": "^3.34.19",

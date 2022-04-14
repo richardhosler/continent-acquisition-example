@@ -4,10 +4,17 @@ import { ComposableMap, Geographies, Geography } from "react-simple-maps";
 import { Result } from "ethers/lib/utils";
 import { getContinentId } from "../utils/getContinentData";
 import colors from "tailwindcss/colors";
+import { Connector } from "wagmi";
 interface MapChartInterface {
   onTooltipChange: (content: string) => void;
-  contractData: Result;
-  accountData: any;
+  contractData?: Result;
+  accountData?:
+    | {
+        address: string;
+        connector: Connector<any, any> | undefined;
+        ens: { avatar: string | null | undefined; name: string } | undefined;
+      }
+    | undefined;
   readContractData: any;
   setIsOpen: (isOpen: boolean) => void;
   setContinent: (continent: string) => void;
@@ -20,12 +27,13 @@ const MapChart = ({
   setContinent,
 }: MapChartInterface) => {
   const getOwnerAddress = (ISO: string): string | null => {
-    return getContinentId(ISO) != -1
+    return contractData && getContinentId(ISO) != -1
       ? contractData[getContinentId(ISO)][1]
       : null;
   };
 
   const getContinentColour = (ISO: string, hover: boolean) => {
+    if (!accountData) return colors.slate[400];
     if (hover) {
       switch (getOwnerAddress(ISO)) {
         case accountData.address:

@@ -26,6 +26,7 @@ import { twMerge } from "tailwind-merge";
 import continentToken from "../../contract/build/ContinentToken.json";
 import chevron from "../assets/icons/chevron.svg";
 import { gweiFormatter } from "../utils/gweiFormatter";
+import { truncateString } from "../utils/truncateString";
 import { CountryInterface } from "../utils/restCountriesInterface";
 import { convertStringToByteArray } from "../utils/convertStringToByteArray";
 import { Address } from "../components/Address";
@@ -33,6 +34,7 @@ import { Button } from "../components/Button";
 import { Header } from "../components/Header";
 import { CountryDataView } from "../components/CountryData";
 import { ContinentInfo } from "../components/ContinentInfo";
+import { Footer } from "../components/Footer";
 import {
   getContinentId,
   getContinentName,
@@ -44,8 +46,9 @@ import "regenerator-runtime/runtime";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "react-loading-skeleton/dist/skeleton.css";
-import { Footer } from "../components/Footer";
-import { truncateString } from "../utils/truncateString";
+import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
+import { Loading } from "../components/Loading";
+
 enum Status {
   OwnedByYou,
   OwnedBySomeoneElse,
@@ -357,23 +360,7 @@ const Home: NextPage = () => {
     transactionError,
   ]);
 
-  return accountLoading ||
-    networkLoading ||
-    continentLoading ||
-    priceLoading ? (
-    <>
-      <Header
-        address={accountData?.address}
-        networkData={networkData}
-        connectors={connectData.connectors}
-        handleConnect={handleConnect}
-        handleDisconnect={handleDisconnect}
-        handleSwitchNetwork={handleSwitchNetwork}
-      />
-      <Footer />
-      Loading...
-    </>
-  ) : (
+  return (
     <>
       <ReactTooltip backgroundColor={colors.slate[800]}>
         {tooltipContent}
@@ -388,16 +375,16 @@ const Home: NextPage = () => {
         currentPrice={gweiFormatter(priceData?.toString())}
       />
       <Footer />
-      {connectData.connected && continentData && (
-        <MapChart
-          setContinent={setContinent}
-          setIsOpen={setModalIsOpen}
-          onTooltipChange={handleTooltipChange}
-          contractData={continentData}
-          accountData={accountData}
-          readContractData={readContinents}
-        />
-      )}
+
+      <MapChart
+        setContinent={setContinent}
+        setIsOpen={setModalIsOpen}
+        onTooltipChange={handleTooltipChange}
+        contractData={continentData}
+        accountData={accountData}
+        readContractData={readContinents}
+      />
+
       <Modal
         id="modal"
         isOpen={modalIsOpen}
