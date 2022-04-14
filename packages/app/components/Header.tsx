@@ -91,6 +91,7 @@ export const Header = ({
               suffix={4}
               handleTooltipChange={handleTooltipChange}
               className="bg-slate-800 text-slate-100 hover:bg-slate-700"
+              chainId={networkData.chain?.id}
             />
             <Button onClick={handleDisconnect}>Disconnect</Button>
           </>
