@@ -44,6 +44,7 @@ import "regenerator-runtime/runtime";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "react-loading-skeleton/dist/skeleton.css";
+import { Footer } from "../components/Footer";
 enum Status {
   OwnedByYou,
   OwnedBySomeoneElse,
@@ -107,7 +108,6 @@ const Home: NextPage = () => {
     ["Region", continentSelected],
     () => fetch(fetchURL).then((res) => res.json())
   );
-
   const [submitDisabled, setSubmitDisabled] = useState(false);
   const [modalIsOpen, setModalIsOpen] = useState(false);
 
@@ -369,6 +369,7 @@ const Home: NextPage = () => {
         handleDisconnect={handleDisconnect}
         handleSwitchNetwork={handleSwitchNetwork}
       />
+      <Footer />
       Loading...
     </>
   ) : (
@@ -385,6 +386,7 @@ const Home: NextPage = () => {
         handleSwitchNetwork={handleSwitchNetwork}
         currentPrice={gweiFormatter(priceData?.toString())}
       />
+      <Footer />
       {connectData.connected && continentData && (
         <MapChart
           setContinent={setContinent}
@@ -395,7 +397,6 @@ const Home: NextPage = () => {
           readContractData={readContinents}
         />
       )}
-
       <Modal
         id="modal"
         isOpen={modalIsOpen}
@@ -514,7 +515,10 @@ const Home: NextPage = () => {
                 {getContinentStatus(continentSelected) ===
                   Status.OwnedBySomeoneElse && (
                   <span>
-                    <Address text={getOwnerAddress(continentSelected)} />
+                    <Address
+                      text={getOwnerAddress(continentSelected)}
+                      chainId={networkData.chain?.id}
+                    />
                     <Button
                       className="bg-lime-700 hover:bg-lime-600 focus:bg-lime-500 text-slate-100 font-semibold py-2 px-4 float-right"
                       disabled={true}

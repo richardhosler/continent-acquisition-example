@@ -5,9 +5,7 @@ module.exports = {
   ],
   theme: {
     extend: {
-      colors: {
-        Xanadu: "#667761",
-      },
+      colors: {},
     },
   },
   plugins: [],
