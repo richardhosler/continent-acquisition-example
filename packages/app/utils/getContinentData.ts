@@ -51,13 +51,8 @@ export const getCoverImage = (ISO: string): StaticImageData | string => {
       return " ";
   }
 };
-interface getContinentNameInterface {
-  continentSelected: string;
-}
 
-export const getContinentName = ({
-  continentSelected,
-}: getContinentNameInterface): string | undefined => {
+export const getContinentName = (continentSelected: string) => {
   switch (continentSelected) {
     case "AF":
       return "Africa";

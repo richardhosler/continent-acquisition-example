@@ -45,6 +45,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "react-loading-skeleton/dist/skeleton.css";
 import { Footer } from "../components/Footer";
+import { truncateString } from "../utils/truncateString";
 enum Status {
   OwnedByYou,
   OwnedBySomeoneElse,
@@ -129,12 +130,12 @@ const Home: NextPage = () => {
     price: Result | undefined
   ) => {
     Swal.fire({
-      title: "Are you sure?",
-      text: `This will cost you ${
-        gweiFormatter(priceData?.toString()).amount
-      } ${gweiFormatter(priceData?.toString()).symbol}!`,
-      confirmButtonText: "Yes, acquire it!",
-      icon: "warning",
+      text: `Are you sure buying ${getContinentName(
+        continentSelected
+      )} will cost you ${gweiFormatter(priceData?.toString()).amount} ${
+        gweiFormatter(priceData?.toString()).symbol
+      }!`,
+      confirmButtonText: "Yes, acquire it.",
       showCancelButton: true,
       background: colors.slate[100],
       backdrop: `${colors.slate[400]}80`,
@@ -161,10 +162,8 @@ const Home: NextPage = () => {
   };
   const callRelinquishContinent = async (ISO: string) => {
     Swal.fire({
-      title: "Are you sure?",
-      text: "You will lose ownership of this continent, and will not be able to revert this!",
+      text: "You will lose ownership of this continent, this action cannot be undone.",
       confirmButtonText: "Yes, get rid of it!",
-      icon: "warning",
       showCancelButton: true,
       background: colors.slate[100],
       backdrop: `${colors.slate[400]}80`,
@@ -194,10 +193,12 @@ const Home: NextPage = () => {
     ISO: string
   ) => {
     Swal.fire({
-      title: "Are you sure?",
-      text: "You will not be able to revert this!",
-      icon: "warning",
-      confirmButtonText: "Yes, transfer it!",
+      text: `Are you sure? ${truncateString({
+        text: to,
+      })} will become the new owner of ${getContinentName(
+        continentSelected
+      )}. This action cannot be undone.`,
+      confirmButtonText: "Yes, transfer it.",
       showCancelButton: true,
       background: colors.slate[100],
       backdrop: `${colors.slate[400]}80`,
@@ -240,9 +241,9 @@ const Home: NextPage = () => {
       return Status.OwnedBySomeoneElse;
     }
   };
-  const fetchURL = `https://restcountries.com/v3.1/region/${getContinentName({
-    continentSelected,
-  })}`;
+  const fetchURL = `https://restcountries.com/v3.1/region/${getContinentName(
+    continentSelected
+  )}`;
 
   Modal.setAppElement("#__next");
 

@@ -17,9 +17,9 @@ export const ContinentInfo = ({
   fieldList = ["population", "area", "region"],
   className,
 }: ContinentInfoInterface) => {
-  const fetchURL = `https://restcountries.com/v3.1/region/${getContinentName({
-    continentSelected,
-  })}`;
+  const fetchURL = `https://restcountries.com/v3.1/region/${getContinentName(
+    continentSelected
+  )}`;
   const { data, isLoading } = useQuery<CountryInterface[], Error>(
     ["Region", continentSelected],
     () => fetch(fetchURL).then((res) => res.json())
@@ -47,10 +47,10 @@ export const ContinentInfo = ({
         <div className="text-4xl">
           {isLoading ? (
             <Skeleton className="opacity-20" />
-          ) : data && data[0].subregion !== "Eastern Europe" ? (
-            data[0].subregion
+          ) : data && data[0].region !== "Americas" ? (
+            data[0].region
           ) : (
-            data && data[0].region
+            data && data[0].subregion
           )}
         </div>
 
