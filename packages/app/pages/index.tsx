@@ -1,14 +1,13 @@
-import Modal from "react-modal";
-import Image from "next/image";
 import React, { useEffect, useState } from "react";
+import type { NextPage } from "next";
+import Image from "next/image";
+import Modal from "react-modal";
 import toast from "react-hot-toast";
+import ReactTooltip from "react-tooltip";
 import MapChart from "../components/MapChart";
 import { Result } from "ethers/lib/utils";
-import ReactTooltip from "react-tooltip";
-import "regenerator-runtime/runtime";
-import "react-loading-skeleton/dist/skeleton.css";
 import { object, string } from "yup";
-import type { NextPage } from "next";
+import Swal from "sweetalert2";
 import { Field, Form, Formik, FormikHelpers } from "formik";
 import {
   Connector,
@@ -20,29 +19,31 @@ import {
   useProvider,
   useWaitForTransaction,
 } from "wagmi";
-import continentToken from "../../contract/build/ContinentToken.json";
-import { convertStringToByteArray } from "../utils/convertStringToByteArray";
-import { gweiFormatter } from "../utils/gweiFormatter";
-import { Header } from "../components/Header";
-import { Button } from "../components/Button";
-import { Address } from "../components/Address";
-import { ContinentInfo } from "../components/ContinentInfo";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
-import { CountryDataView } from "../components/CountryData";
-import { useQuery } from "react-query";
-import { CountryInterface } from "../utils/restCountriesInterface";
-import { twMerge } from "tailwind-merge";
-import chevron from "../assets/icons/chevron.svg";
 import { MouseEventHandler } from "react";
+import { useQuery } from "react-query";
+import { twMerge } from "tailwind-merge";
+import continentToken from "../../contract/build/ContinentToken.json";
+import chevron from "../assets/icons/chevron.svg";
+import { gweiFormatter } from "../utils/gweiFormatter";
+import { CountryInterface } from "../utils/restCountriesInterface";
+import { convertStringToByteArray } from "../utils/convertStringToByteArray";
+import { Address } from "../components/Address";
+import { Button } from "../components/Button";
+import { Header } from "../components/Header";
+import { CountryDataView } from "../components/CountryData";
+import { ContinentInfo } from "../components/ContinentInfo";
 import {
   getContinentId,
   getContinentName,
   getCoverImage,
   flavourText,
 } from "../utils/getContinentData";
-
+import colors from "tailwindcss/colors";
+import "regenerator-runtime/runtime";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import "react-loading-skeleton/dist/skeleton.css";
 enum Status {
   OwnedByYou,
   OwnedBySomeoneElse,
@@ -109,7 +110,6 @@ const Home: NextPage = () => {
 
   const [submitDisabled, setSubmitDisabled] = useState(false);
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [dialogIsOpen, setDialogIsOpen] = useState(false);
 
   const handleTooltipChange = (content: string) => {
     ReactTooltip.rebuild();
@@ -128,33 +128,98 @@ const Home: NextPage = () => {
     ISO: string,
     price: Result | undefined
   ) => {
-    const transaction = await acquireContractCall({
-      args: convertStringToByteArray({ s: ISO }),
-      overrides: { from: accountData?.address, value: price },
+    Swal.fire({
+      title: "Are you sure?",
+      text: `This will cost you ${
+        gweiFormatter(priceData?.toString()).amount
+      } ${gweiFormatter(priceData?.toString()).symbol}!`,
+      confirmButtonText: "Yes, acquire it!",
+      icon: "warning",
+      showCancelButton: true,
+      background: colors.slate[100],
+      backdrop: `${colors.slate[400]}80`,
+      buttonsStyling: false,
+      customClass: {
+        confirmButton:
+          "inline-flex text-slate-100 bg-lime-700 hover:bg-lime-600 focus:bg-lime-500 disabled:bg-stone-700 font-medium rounded-sm text-sm px-3 py-2 space-x-2 mx-2",
+        cancelButton:
+          "inline-flex text-slate-100 bg-red-700 hover:bg-red-600 focus:bg-red-500 disabled:bg-stone-700 font-medium rounded-sm text-sm px-3 py-2 space-x-2",
+      },
+    }).then(async (result) => {
+      if (result.value) {
+        const transaction = await acquireContractCall({
+          args: convertStringToByteArray({ s: ISO }),
+          overrides: { from: accountData?.address, value: price },
+        });
+        if (transaction.data?.hash) {
+          wait({ hash: transaction.data.hash });
+        }
+      } else {
+        setSubmitDisabled(false);
+      }
     });
-    if (transaction.data?.hash) {
-      wait({ hash: transaction.data.hash });
-    }
   };
   const callRelinquishContinent = async (ISO: string) => {
-    const transaction = await relinquishContinentCall({
-      args: convertStringToByteArray({ s: ISO }),
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You will lose ownership of this continent, and will not be able to revert this!",
+      confirmButtonText: "Yes, get rid of it!",
+      icon: "warning",
+      showCancelButton: true,
+      background: colors.slate[100],
+      backdrop: `${colors.slate[400]}80`,
+      buttonsStyling: false,
+      customClass: {
+        confirmButton:
+          "inline-flex text-slate-100 bg-lime-700 hover:bg-lime-600 focus:bg-lime-500 disabled:bg-stone-700 font-medium rounded-sm text-sm px-3 py-2 space-x-2 mx-2",
+        cancelButton:
+          "inline-flex text-slate-100 bg-red-700 hover:bg-red-600 focus:bg-red-500 disabled:bg-stone-700 font-medium rounded-sm text-sm px-3 py-2 space-x-2",
+      },
+    }).then(async (result) => {
+      if (result.value) {
+        const transaction = await relinquishContinentCall({
+          args: convertStringToByteArray({ s: ISO }),
+        });
+        if (transaction.data?.hash) {
+          wait({ hash: transaction.data.hash });
+        }
+      } else {
+        setSubmitDisabled(false);
+      }
     });
-    if (transaction.data?.hash) {
-      wait({ hash: transaction.data.hash });
-    }
   };
   const callTransferContinent = async (
     from: string,
     to: string,
     ISO: string
   ) => {
-    const transaction = await transferContinentCall({
-      args: [from, to, convertStringToByteArray({ s: ISO })],
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You will not be able to revert this!",
+      icon: "warning",
+      confirmButtonText: "Yes, transfer it!",
+      showCancelButton: true,
+      background: colors.slate[100],
+      backdrop: `${colors.slate[400]}80`,
+      buttonsStyling: false,
+      customClass: {
+        confirmButton:
+          "inline-flex text-slate-100 bg-lime-700 hover:bg-lime-600 focus:bg-lime-500 disabled:bg-stone-700 font-medium rounded-sm text-sm px-3 py-2 space-x-2 mx-2",
+        cancelButton:
+          "inline-flex text-slate-100 bg-red-700 hover:bg-red-600 focus:bg-red-500 disabled:bg-stone-700 font-medium rounded-sm text-sm px-3 py-2 space-x-2",
+      },
+    }).then(async (result) => {
+      if (result.value) {
+        const transaction = await transferContinentCall({
+          args: [from, to, convertStringToByteArray({ s: ISO })],
+        });
+        if (transaction.data?.hash) {
+          wait({ hash: transaction.data.hash });
+        }
+      } else {
+        setSubmitDisabled(false);
+      }
     });
-    if (transaction.data?.hash) {
-      wait({ hash: transaction.data.hash });
-    }
   };
   const handleDisconnect = () => {
     disconnect();
@@ -308,7 +373,9 @@ const Home: NextPage = () => {
     </>
   ) : (
     <>
-      <ReactTooltip backgroundColor="#0F172A">{tooltipContent}</ReactTooltip>
+      <ReactTooltip backgroundColor={colors.slate[800]}>
+        {tooltipContent}
+      </ReactTooltip>
       <Header
         address={accountData?.address}
         networkData={networkData}
@@ -328,25 +395,7 @@ const Home: NextPage = () => {
           readContractData={readContinents}
         />
       )}
-      <Modal
-        id="dialog"
-        isOpen={dialogIsOpen}
-        shouldFocusAfterRender={true}
-        shouldCloseOnOverlayClick={false}
-        shouldCloseOnEsc={false}
-        onAfterOpen={() => {
-          document.getElementById("dialog")?.focus();
-        }}
-        onRequestClose={() => setDialogIsOpen(false)}
-        contentLabel="Confirmation Dialog"
-        className="mx-auto"
-      >
-        <div className="flex">Confirm</div>
-        <div className="flex">
-          <Button onClick={() => null}>Confirm</Button>
-          <Button onClick={() => null}>Cancel</Button>
-        </div>
-      </Modal>
+
       <Modal
         id="modal"
         isOpen={modalIsOpen}
@@ -358,6 +407,7 @@ const Home: NextPage = () => {
         }}
         onRequestClose={() => setModalIsOpen(false)}
         contentLabel="Modal"
+        overlayClassName="w-screen h-screen fixed top-0 left-0 bg-slate-400 bg-opacity-60"
         className="w-3/6 absolute left-1/4 top-1/4 bg-slate-100 rounded-lg shadow-lg max-h-80 overflow-hidden"
       >
         <Slider {...sliderSettings}>
@@ -366,13 +416,14 @@ const Home: NextPage = () => {
               <div className="relative overflow-hidden rounded-l-lg col-span-2">
                 <ContinentInfo
                   continentSelected={continentSelected}
-                  className="z-10 p-6 relative bg-opacity-60 bg-slate-900 text-stone-100 inset-0"
+                  className="z-10 p-6 relative bg-opacity-60 bg-slate-900 text-slate-100 inset-0"
                 />
                 <Image
                   layout="fill"
                   className="object-center object-cover pointer-events-none"
                   src={getCoverImage(continentSelected)}
                   alt={`an image from ${continentSelected}`}
+                  priority
                 />
               </div>
 
@@ -381,7 +432,7 @@ const Home: NextPage = () => {
                 {getContinentStatus(continentSelected) === Status.Unowned && (
                   <div>
                     <Button
-                      className="bg-lime-600 hover:bg-lime-500 focus:bg-lime-400 text-white font-bold py-2 px-4 float-right"
+                      className="bg-lime-700 hover:bg-lime-600 focus:bg-lime-500 text-slate-100 font-bold py-2 px-4 float-right"
                       onClick={async () => {
                         callAcquireContinent(continentSelected, priceData);
                         setSubmitDisabled(true);
@@ -409,16 +460,15 @@ const Home: NextPage = () => {
                         values: Values,
                         { setSubmitting }: FormikHelpers<Values>
                       ) => {
-                        () => {
-                          if (accountData) {
-                            callTransferContinent(
-                              accountData.address,
-                              values.address,
-                              continentSelected
-                            );
-                          }
-                          setSubmitting(false);
-                        };
+                        console.log("transfer clicked");
+                        if (accountData) {
+                          callTransferContinent(
+                            accountData.address,
+                            values.address,
+                            continentSelected
+                          );
+                        }
+                        setSubmitting(false);
                       }}
                       validationSchema={schema}
                     >
@@ -426,7 +476,7 @@ const Home: NextPage = () => {
                         return (
                           <span className="flex space-x-4">
                             <Button
-                              className="float-left bg-red-600 hover:bg-red-500 focus:bg-red-400 text-white"
+                              className="float-left bg-red-700 hover:bg-red-600 focus:bg-red-500 text-white"
                               onClick={() => {
                                 callRelinquishContinent(continentSelected);
                                 setSubmitDisabled(true);
@@ -437,7 +487,7 @@ const Home: NextPage = () => {
                             </Button>
                             <Form className="flex">
                               <div className="align-text-top flex place-content-between space-x-2">
-                                <div className="text-red-600 absolute bottom-20 pl-4">
+                                <div className="text-red-700 absolute bottom-20 pl-4">
                                   {props.errors.address && props.errors.address}
                                 </div>
                                 <Field
@@ -449,7 +499,7 @@ const Home: NextPage = () => {
                                 <Button
                                   type="submit"
                                   disabled={!(props.isValid && props.dirty)}
-                                  className="bg-lime-600 hover:bg-lime-400 text-white float-right"
+                                  className="bg-lime-700 hover:bg-lime-600 focus:bg-lime-500 text-slate-100 float-right"
                                 >
                                   Transfer
                                 </Button>
@@ -466,7 +516,7 @@ const Home: NextPage = () => {
                   <span>
                     <Address text={getOwnerAddress(continentSelected)} />
                     <Button
-                      className="bg-lime-600 hover:bg-lime-500 focus:bg-lime-400 text-white font-bold py-2 px-4 float-right"
+                      className="bg-lime-700 hover:bg-lime-600 focus:bg-lime-500 text-slate-100 font-semibold py-2 px-4 float-right"
                       disabled={true}
                     >
                       <div className="flex space-x-2">
