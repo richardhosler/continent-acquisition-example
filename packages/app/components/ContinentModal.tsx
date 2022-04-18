@@ -93,13 +93,13 @@ export const ContinentModal = ({
     },
     wait,
   ] = useWaitForTransaction({ skip: true });
-  const getOwnerAddress = (ISO: string): string => {
-    return getContinentId(ISO) != -1 && continentData
-      ? continentData[getContinentId(ISO)][1]
+  const getOwnerAddress = (iso: string): string => {
+    return getContinentId(iso) != -1 && continentData
+      ? continentData[getContinentId(iso)][1]
       : undefined;
   };
   const callAcquireContinent = async (
-    ISO: string,
+    iso: string,
     price: Result | undefined
   ) => {
     Swal.fire({
@@ -122,7 +122,7 @@ export const ContinentModal = ({
     }).then(async (result) => {
       if (result.value) {
         const transaction = await acquireContractCall({
-          args: convertStringToByteArray({ s: ISO }),
+          args: convertStringToByteArray({ s: iso }),
           overrides: { from: accountData?.address, value: price },
         });
         if (transaction.data?.hash) {
@@ -131,7 +131,7 @@ export const ContinentModal = ({
       }
     });
   };
-  const callRelinquishContinent = async (ISO: string) => {
+  const callRelinquishContinent = async (iso: string) => {
     Swal.fire({
       text: "You will lose ownership of this continent, this action cannot be undone.",
       confirmButtonText: "Yes, get rid of it!",
@@ -148,7 +148,7 @@ export const ContinentModal = ({
     }).then(async (result) => {
       if (result.value) {
         const transaction = await relinquishContinentCall({
-          args: convertStringToByteArray({ s: ISO }),
+          args: convertStringToByteArray({ s: iso }),
         });
         if (transaction.data?.hash) {
           wait({ hash: transaction.data.hash });
@@ -159,7 +159,7 @@ export const ContinentModal = ({
   const callTransferContinent = async (
     from: string,
     to: string,
-    ISO: string
+    iso: string
   ) => {
     Swal.fire({
       text: `Are you sure? ${truncateString({
@@ -181,7 +181,7 @@ export const ContinentModal = ({
     }).then(async (result) => {
       if (result.value) {
         const transaction = await transferContinentCall({
-          args: [from, to, convertStringToByteArray({ s: ISO })],
+          args: [from, to, convertStringToByteArray({ s: iso })],
         });
         if (transaction.data?.hash) {
           wait({ hash: transaction.data.hash });

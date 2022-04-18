@@ -25,16 +25,16 @@ const MapChart = ({
   setIsOpen,
   setContinent,
 }: MapChartInterface) => {
-  const getOwnerAddress = (ISO: string): string | null => {
-    return contractData && getContinentId(ISO) != -1
-      ? contractData[getContinentId(ISO)][1]
+  const getOwnerAddress = (iso: string): string | null => {
+    return contractData && getContinentId(iso) != -1
+      ? contractData[getContinentId(iso)][1]
       : null;
   };
 
-  const getContinentColour = (ISO: string, hover: boolean) => {
+  const getContinentColour = (iso: string, hover: boolean) => {
     if (!accountData) return colors.slate[400];
     if (hover) {
-      switch (getOwnerAddress(ISO)) {
+      switch (getOwnerAddress(iso)) {
         case accountData.address:
           return colors.yellow["500"];
         case "0x0000000000000000000000000000000000000000":
@@ -43,7 +43,7 @@ const MapChart = ({
           return colors.green["500"];
       }
     } else {
-      switch (getOwnerAddress(ISO)) {
+      switch (getOwnerAddress(iso)) {
         case accountData.address:
           return colors.yellow["600"];
         case "0x0000000000000000000000000000000000000000":
@@ -67,11 +67,11 @@ const MapChart = ({
               geography={geo}
               style={{
                 default: {
-                  fill: getContinentColour(geo.properties.ISO, false),
+                  fill: getContinentColour(geo.properties.iso, false),
                   outline: "none",
                 },
                 hover: {
-                  fill: getContinentColour(geo.properties.ISO, true),
+                  fill: getContinentColour(geo.properties.iso, true),
                   outline: "#0F0F0F",
                 },
                 pressed: {
@@ -86,7 +86,7 @@ const MapChart = ({
                 onTooltipChange("");
               }}
               onMouseDown={() => {
-                setContinent(geo.properties.ISO);
+                setContinent(geo.properties.iso);
                 setIsOpen(true);
               }}
             />

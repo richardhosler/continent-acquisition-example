@@ -32,8 +32,8 @@ export const getContinentId = (continentName: string): number => {
   }
 };
 
-export const getCoverImage = (ISO: string): StaticImageData | string => {
-  const continentId = getContinentId(ISO);
+export const getCoverImage = (iso: string): StaticImageData | string => {
+  const continentId = getContinentId(iso);
   switch (continentId) {
     case 0:
       return africaImage;
@@ -72,8 +72,8 @@ export const getContinentName = (continentSelected: string) => {
       return undefined;
   }
 };
-export const flavourText = (ISO: string) => {
-  switch (ISO) {
+export const flavourText = (iso: string) => {
+  switch (iso) {
     case "AF":
       return "Africa is the largest of the three great southward projections from the largest landmass of the Earth. Separated from Europe by the Mediterranean Sea, it is joined to Asia at its northeast extremity by the Isthmus of Suez.";
     case "AS":
