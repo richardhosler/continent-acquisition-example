@@ -4,7 +4,6 @@ import { useState, useMemo } from "react";
 import Image from "next/image";
 import { numberFormatter } from "../utils/numberFormatter";
 import { twMerge } from "tailwind-merge";
-
 interface CountryDataViewInterface {
   data: CountryInterface[];
   headerStyle?: string;
@@ -49,7 +48,7 @@ export const CountryDataView = ({
     state: {
       sorting,
     },
-    // onSortingChange: setSorting,
+    onSortingChange: setSorting, //TODO: get rid of the red squiggly line
     sortRowsFn: sortRowsFn,
   });
 
@@ -83,8 +82,8 @@ export const CountryDataView = ({
                       >
                         {header.renderHeader()}
                         {{
-                          asc: " ▲",
-                          desc: " ▼",
+                          asc: "▲",
+                          desc: "▼",
                         }[String(header.column.getIsSorted())] ?? null}
                       </div>
                     )}

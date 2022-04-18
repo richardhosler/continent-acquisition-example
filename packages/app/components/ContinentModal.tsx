@@ -98,26 +98,31 @@ export const ContinentModal = ({
       ? continentData[getContinentId(iso)][1]
       : undefined;
   };
+  const confirmButtonClass =
+    "inline-flex text-slate-100 bg-lime-700 hover:bg-lime-600 disabled:bg-stone-700 font-medium rounded-sm text-sm px-3 py-2 space-x-2 mx-2";
+  const cancelButtonClass =
+    "inline-flex text-slate-100 bg-red-700 hover:bg-red-600 focus:bg-red-500 disabled:bg-stone-700 font-medium rounded-sm text-sm px-3 py-2 space-x-2";
+
   const callAcquireContinent = async (
     iso: string,
     price: Result | undefined
   ) => {
     Swal.fire({
-      text: `Are you sure buying ${getContinentName(
+      text: `Are you sure? Buying ${getContinentName(
         continentSelected
       )} will cost you ${gweiFormatter(priceData?.toString()).amount} ${
         gweiFormatter(priceData?.toString()).symbol
-      }!`,
-      confirmButtonText: "Yes, acquire it.",
+      }.`,
+      confirmButtonText: "Yes",
+      cancelButtonText: "No",
       showCancelButton: true,
       background: colors.slate[100],
       backdrop: `${colors.slate[400]}80`,
       buttonsStyling: false,
       customClass: {
-        confirmButton:
-          "inline-flex text-slate-100 bg-lime-700 hover:bg-lime-600 disabled:bg-stone-700 font-medium rounded-sm text-sm px-3 py-2 space-x-2 mx-2",
-        cancelButton:
-          "inline-flex text-slate-100 bg-red-700 hover:bg-red-600 focus:bg-red-500 disabled:bg-stone-700 font-medium rounded-sm text-sm px-3 py-2 space-x-2",
+        htmlContainer: "p-6",
+        confirmButton: confirmButtonClass,
+        cancelButton: cancelButtonClass,
       },
     }).then(async (result) => {
       if (result.value) {
@@ -134,16 +139,15 @@ export const ContinentModal = ({
   const callRelinquishContinent = async (iso: string) => {
     Swal.fire({
       text: "You will lose ownership of this continent, this action cannot be undone.",
-      confirmButtonText: "Yes, get rid of it!",
+      confirmButtonText: "Yes",
+      cancelButtonText: "No",
       showCancelButton: true,
       background: colors.slate[100],
       backdrop: `${colors.slate[400]}80`,
       buttonsStyling: false,
       customClass: {
-        confirmButton:
-          "inline-flex text-slate-100 bg-lime-700 hover:bg-lime-600 focus:bg-lime-500 disabled:bg-stone-700 font-medium rounded-sm text-sm px-3 py-2 space-x-2 mx-2",
-        cancelButton:
-          "inline-flex text-slate-100 bg-red-700 hover:bg-red-600 focus:bg-red-500 disabled:bg-stone-700 font-medium rounded-sm text-sm px-3 py-2 space-x-2",
+        confirmButton: confirmButtonClass,
+        cancelButton: cancelButtonClass,
       },
     }).then(async (result) => {
       if (result.value) {
@@ -167,16 +171,15 @@ export const ContinentModal = ({
       })} will become the new owner of ${getContinentName(
         continentSelected
       )}. This action cannot be undone.`,
-      confirmButtonText: "Yes, transfer it.",
+      confirmButtonText: "Yes",
+      cancelButtonText: "No",
       showCancelButton: true,
       background: colors.slate[100],
       backdrop: `${colors.slate[400]}80`,
       buttonsStyling: false,
       customClass: {
-        confirmButton:
-          "inline-flex text-slate-100 bg-lime-700 hover:bg-lime-600 focus:bg-lime-500 disabled:bg-stone-700 font-medium rounded-sm text-sm px-3 py-2 space-x-2 mx-2",
-        cancelButton:
-          "inline-flex text-slate-100 bg-red-700 hover:bg-red-600 focus:bg-red-500 disabled:bg-stone-700 font-medium rounded-sm text-sm px-3 py-2 space-x-2",
+        confirmButton: confirmButtonClass,
+        cancelButton: cancelButtonClass,
       },
     }).then(async (result) => {
       if (result.value) {
@@ -262,8 +265,8 @@ export const ContinentModal = ({
     slidesToShow: 1,
     slidesToScroll: 1,
     arrows: true,
-    nextArrow: <NextArrow />,
-    prevArrow: <PrevArrow />,
+    // nextArrow: <NextArrow />,
+    // prevArrow: <PrevArrow />,
   };
   Modal.setAppElement("#__next");
 
@@ -306,18 +309,20 @@ export const ContinentModal = ({
                   getContinentStatus(continentSelected) === Status.Unowned && (
                     <div>
                       <Button
-                        className="bg-lime-700 hover:bg-lime-600 focus:bg-lime-500 text-slate-100 font-bold py-2 px-4 float-right"
+                        className="bg-lime-700 hover:bg-lime-600 focus:bg-lime-500 text-slate-100 py-2 px-4 float-right"
                         onClick={async () => {
                           callAcquireContinent(continentSelected, priceData);
                         }}
                         disabled={isDisabled}
                       >
-                        <div className="flex space-x-2">
-                          <span className="font-normal">
+                        <div className="flex space-x-1">
+                          <span>
                             {gweiFormatter(priceData?.toString()).amount}
+                          </span>
+                          <span>
                             {gweiFormatter(priceData?.toString()).symbol}
                           </span>
-                          <span>BUY</span>
+                          <span>Buy</span>
                         </div>
                       </Button>
                     </div>
@@ -366,7 +371,7 @@ export const ContinentModal = ({
                                     id="address"
                                     name="address"
                                     placeholder="Recipient address"
-                                    className="text-slate-900 bg-white border-2 border-slate-300 rounded-sm px-2"
+                                    className="text-slate-900 bg-white border-2 border-slate-300 rounded-sm px-2 outline:none focus:outline-none"
                                   />
                                   <Button
                                     type="submit"

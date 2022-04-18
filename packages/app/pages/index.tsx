@@ -96,11 +96,11 @@ const Home: NextPage = () => {
     }
   }, [
     connectData.connected,
-    transactionData,
     readContinents,
     readPrice,
-    transactionLoading,
-    transactionError?.message,
+    aquireContractLoading,
+    relinquishContinentLoading,
+    tranferContinentLoading,
   ]);
   useEffect(() => {
     if (
