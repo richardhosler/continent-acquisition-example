@@ -1,5 +1,5 @@
 import { createTable, sortRowsFn, useTable } from "@tanstack/react-table";
-import React, { useReducer, useState, useMemo } from "react";
+import React, { useState, useMemo } from "react";
 
 interface Country {
   name: string;
@@ -35,7 +35,6 @@ export const Table = () => {
     state: {
       sorting,
     },
-    onSortingChange: setSorting,
     sortRowsFn: sortRowsFn,
   });
 

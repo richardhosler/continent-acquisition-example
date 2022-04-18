@@ -15,7 +15,6 @@ interface MapChartInterface {
         ens: { avatar: string | null | undefined; name: string } | undefined;
       }
     | undefined;
-  readContractData: any;
   setIsOpen: (isOpen: boolean) => void;
   setContinent: (continent: string) => void;
 }
