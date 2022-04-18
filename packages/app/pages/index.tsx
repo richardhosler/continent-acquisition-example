@@ -159,7 +159,6 @@ const Home: NextPage = () => {
         currentPrice={gweiFormatter(priceData?.toString())}
       />
       <Footer />
-
       <MapChart
         setContinent={setContinent}
         setIsOpen={setIsModalOpen}

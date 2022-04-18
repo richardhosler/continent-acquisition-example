@@ -1,6 +1,8 @@
+import Image from "next/image";
+import githubIcon from "../assets/icons/github.svg";
 export const Footer = () => {
   return (
-    <div className="flex fixed bottom-0 w-screen text-slate-900 p-4 place-content-between mr-2">
+    <div className="flex fixed bottom-0 w-screen text-slate-700 p-4 place-content-center">
       <span>
         Example project by{" "}
         <a
@@ -9,15 +11,15 @@ export const Footer = () => {
           rel="noopener noreferrer"
           className="hover:underline"
         >
-          Richard Hosler
-        </a>
+          Richard Hosler{" "}
+          <span className="relative top-1">
+            <Image src={githubIcon} alt="Github Icon" width={20} height={20} />
+          </span>
+        </a>{" "}
+        Built using Next.js, TypeScript &amp; Solidity.
       </span>
-      <span>
-        <a href="https://github.com/" className="hover:underline">
-          project GitHub
-        </a>
-      </span>
-      <span>Built using React, Next.js, TypeScript, HardHat and Solidity</span>
+
+      <span></span>
     </div>
   );
 };
