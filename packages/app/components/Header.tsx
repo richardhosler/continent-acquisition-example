@@ -39,72 +39,76 @@ export const Header = ({
   };
 
   const classes = twMerge(
-    "flex flex-inline fixed w-full place-content-end place-items-stretch p-2 space-x-2 bg-slate-800 text-slate-100",
+    "grid grid-cols-3 fixed w-full p-2 space-x-2 bg-slate-800 text-slate-100",
     className
   );
 
   return (
     <>
       <div className={classes}>
-        <div className="absolute left-2.5 top-2.5 space-x-3">
+        <div className="space-x-3 relative top-0.5">
           <Image src={headerLogo} alt="Header Logo" width={30} height={30} />
           <span className="align-top font-semibold text-lg">
             Continent Aquisition Demo
           </span>
         </div>
-        <div className="space-x-2 relative right-1/3 top-1">
+        <div
+          className="space-x-1 place-self-center"
+          data-place="bottom"
+          data-effect="float"
+          data-tip="Current price of each continent, will increase with each continent purchased"
+        >
           <span>{currentPrice?.amount}</span>
           <span>{currentPrice?.symbol}</span>
           {currentPrice?.amount && (
-            <a
-              className="relative top-1"
-              data-place="right"
-              data-effect="solid"
-              data-tip="Current price of each continent"
-              data-offset="{'top': 4, 'left': 0}"
-            >
+            <span className="relative top-1">
               <Image src={infoIcon} alt="Info Icon" width={20} height={20} />
-            </a>
+            </span>
           )}
         </div>
         {/* {networkData.chain?.name ?? networkData.chain?.id}{' '}
         {networkData.chain?.unsupported && '(unsupported)'} */}
         {/* <DarkModeToggle /> */}
         {/* if not connected to a wallet */}
-        {address === undefined ? (
-          connectors.map((connector: Connector) => (
-            <Button
-              {...(!connector.ready && "disabled")}
-              key={connector.id}
-              onClick={() => handleConnect(connector)}
-              icon={getConnectorIcon(connector)}
-            >
-              {connector.name}
-              {!connector.ready && " (unsupported)"}
-            </Button>
-          ))
-        ) : (
-          <>
-            {/* if connected to a wallet */}
-            {handleSwitchNetwork &&
-              networkData.chains.map((x: any) =>
-                x.id === networkData.chain?.id ? null : (
-                  <Button key={x.id} onClick={() => handleSwitchNetwork(x.id)}>
-                    Switch to {x.name}
-                  </Button>
-                )
-              )}
+        <span className="place-self-end">
+          {address === undefined ? (
+            connectors.map((connector: Connector) => (
+              <Button
+                {...(!connector.ready && "disabled")}
+                key={connector.id}
+                onClick={() => handleConnect(connector)}
+                icon={getConnectorIcon(connector)}
+              >
+                {connector.name}
+                {!connector.ready && " (unsupported)"}
+              </Button>
+            ))
+          ) : (
+            <span className="space-x-2">
+              {/* if connected to a wallet */}
+              {handleSwitchNetwork &&
+                networkData.chains.map((x: any) =>
+                  x.id === networkData.chain?.id ? null : (
+                    <Button
+                      key={x.id}
+                      onClick={() => handleSwitchNetwork(x.id)}
+                    >
+                      Switch to {x.name}
+                    </Button>
+                  )
+                )}
 
-            <Address
-              text={address}
-              prefix={5}
-              suffix={4}
-              className="bg-slate-800 text-slate-100 hover:bg-slate-700"
-              chainId={networkData.chain?.id}
-            />
-            <Button onClick={handleDisconnect}>Disconnect</Button>
-          </>
-        )}
+              <Address
+                text={address}
+                prefix={5}
+                suffix={4}
+                className="bg-slate-800 text-slate-100 hover:bg-slate-700 relative top-1.5 "
+                chainId={networkData.chain?.id}
+              />
+              <Button onClick={handleDisconnect}>Disconnect</Button>
+            </span>
+          )}
+        </span>
       </div>
     </>
   );
