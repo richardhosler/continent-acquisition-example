@@ -33,8 +33,8 @@ export const Button = ({
     <button
       className={buttonClasses}
       onClick={onClick}
-      disabled={disabled}
       type={type && type}
+      disabled={disabled}
     >
       {icon && (
         <Image
