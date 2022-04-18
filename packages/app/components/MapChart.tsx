@@ -40,16 +40,16 @@ const MapChart = ({
         case "0x0000000000000000000000000000000000000000":
           return colors.green["500"];
         default:
-          return colors.red["500"];
+          return colors.green["500"];
       }
     } else {
       switch (getOwnerAddress(ISO)) {
         case accountData.address:
           return colors.yellow["600"];
         case "0x0000000000000000000000000000000000000000":
-          return colors.green["600"];
+          return colors.green["500"];
         default:
-          return colors.red["600"];
+          return colors.green["500"];
       }
     }
   };
