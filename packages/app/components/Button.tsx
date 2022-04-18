@@ -25,7 +25,7 @@ export const Button = ({
   iconHeight = 18,
 }: ButtonInterface): JSX.Element => {
   const buttonClasses = twMerge(
-    "inline-flex text-slate-100 bg-slate-700 hover:bg-slate-600 focus:bg-slate-500 disabled:bg-stone-700 font-medium rounded-sm text-sm px-3 py-2 space-x-2",
+    "inline-flex text-slate-100 bg-slate-700 hover:bg-slate-600 focus:bg-slate-500 disabled:bg-stone-600 disabled:text-stone-400 font-medium rounded-sm text-sm px-3 py-2 space-x-2",
     className
   );
 
