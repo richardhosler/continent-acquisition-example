@@ -30,12 +30,9 @@ export const Address = ({
   ) : (
     <a
       className={classes}
-      onMouseEnter={() => {
-        handleTooltipChange && handleTooltipChange(text);
-      }}
-      onMouseLeave={() => {
-        handleTooltipChange && handleTooltipChange("");
-      }}
+      data-tip={text}
+      data-place="top"
+      data-effect="solid"
       href={
         chainId === 4
           ? `https://rinkeby.etherscan.io/address/${text}`

@@ -1,11 +1,8 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import type { NextPage } from "next";
 import toast from "react-hot-toast";
 import ReactTooltip from "react-tooltip";
 import MapChart from "../components/MapChart";
-import { Result } from "ethers/lib/utils";
-import { object, string } from "yup";
-import Swal from "sweetalert2";
 import {
   Connector,
   useAccount,
@@ -16,12 +13,8 @@ import {
   useProvider,
   useWaitForTransaction,
 } from "wagmi";
-import { useQuery } from "react-query";
 import continentToken from "../../contract/build/ContinentToken.json";
 import { gweiFormatter } from "../utils/gweiFormatter";
-import { truncateString } from "../utils/truncateString";
-import { CountryInterface } from "../utils/restCountriesInterface";
-import { convertStringToByteArray } from "../utils/convertStringToByteArray";
 import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
 import { getContinentName } from "../utils/getContinentData";
@@ -74,7 +67,6 @@ const Home: NextPage = () => {
   ] = useWaitForTransaction({ skip: true });
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-
   const handleTooltipChange = (content: string) => {
     ReactTooltip.rebuild();
     setTooltipContent(content);
@@ -165,6 +157,7 @@ const Home: NextPage = () => {
         handleDisconnect={handleDisconnect}
         handleSwitchNetwork={handleSwitchNetwork}
         currentPrice={gweiFormatter(priceData?.toString())}
+        handleTooltipChange={handleTooltipChange}
       />
       <Footer />
 

@@ -6,6 +6,7 @@ import walletconnectIcon from "../assets/icons/walletconnect.svg";
 import { twMerge } from "tailwind-merge";
 import { CurrencyInterface } from "../utils/gweiFormatter";
 import headerLogo from "../assets/icons/globe.svg";
+import infoIcon from "../assets/icons/info.svg";
 import Image from "next/image";
 interface HeaderInterface {
   address: string | undefined;
@@ -56,6 +57,17 @@ export const Header = ({
         <div className="space-x-2 relative right-1/3 top-1">
           <span>{currentPrice?.amount}</span>
           <span>{currentPrice?.symbol}</span>
+          {currentPrice?.amount && (
+            <a
+              className="relative top-1"
+              data-place="right"
+              data-effect="solid"
+              data-tip="Current price of each continent"
+              data-offset="{'top': 4, 'left': 0}"
+            >
+              <Image src={infoIcon} alt="Info Icon" width={20} height={20} />
+            </a>
+          )}
         </div>
         {/* {networkData.chain?.name ?? networkData.chain?.id}{' '}
         {networkData.chain?.unsupported && '(unsupported)'} */}
