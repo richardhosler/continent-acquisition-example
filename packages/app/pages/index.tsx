@@ -157,7 +157,6 @@ const Home: NextPage = () => {
         handleDisconnect={handleDisconnect}
         handleSwitchNetwork={handleSwitchNetwork}
         currentPrice={gweiFormatter(priceData?.toString())}
-        handleTooltipChange={handleTooltipChange}
       />
       <Footer />
 

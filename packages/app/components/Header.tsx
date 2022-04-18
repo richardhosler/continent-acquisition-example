@@ -17,7 +17,6 @@ interface HeaderInterface {
   handleConnect: (connector: Connector) => void;
   handleDisconnect: () => void;
   handleSwitchNetwork: (chainId: number) => void;
-  handleTooltipChange?: (tooltipContent: string) => void;
 }
 
 export const Header = ({
@@ -29,7 +28,6 @@ export const Header = ({
   handleConnect,
   handleDisconnect,
   handleSwitchNetwork,
-  handleTooltipChange,
 }: HeaderInterface): JSX.Element => {
   const getConnectorIcon = (connector: Connector): string | undefined => {
     switch (connector.name) {
@@ -101,7 +99,6 @@ export const Header = ({
               text={address}
               prefix={5}
               suffix={4}
-              handleTooltipChange={handleTooltipChange}
               className="bg-slate-800 text-slate-100 hover:bg-slate-700"
               chainId={networkData.chain?.id}
             />
