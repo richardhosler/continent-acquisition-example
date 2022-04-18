@@ -67,11 +67,11 @@ const MapChart = ({
               geography={geo}
               style={{
                 default: {
-                  fill: getContinentColour(geo.properties.iso, false),
+                  fill: getContinentColour(geo.properties.ISO, false),
                   outline: "none",
                 },
                 hover: {
-                  fill: getContinentColour(geo.properties.iso, true),
+                  fill: getContinentColour(geo.properties.ISO, true),
                   outline: "#0F0F0F",
                 },
                 pressed: {
@@ -86,7 +86,7 @@ const MapChart = ({
                 onTooltipChange("");
               }}
               onMouseDown={() => {
-                setContinent(geo.properties.iso);
+                setContinent(geo.properties.ISO);
                 setIsOpen(true);
               }}
             />
