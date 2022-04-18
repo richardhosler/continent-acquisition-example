@@ -29,8 +29,8 @@ export const Address = ({
     <a
       className={classes}
       data-tip={text}
-      data-place="top"
-      data-effect="solid"
+      data-place="bottom"
+      data-effect="float"
       href={
         chainId === 4
           ? `https://rinkeby.etherscan.io/address/${text}`
