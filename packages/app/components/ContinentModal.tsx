@@ -57,13 +57,13 @@ export const ContinentModal = ({
   const schema = object({
     address: string()
       .trim()
-      .matches(/^0x[0-9a-f]{40}$/i, "Invalid Etherium address.")
+      .matches(/^0x[0-9a-f]{40}$/i, "Invalid Ethereum address")
       .test(
         "isYours",
-        "You already own this.",
+        "You already own this",
         (value) => value !== accountData?.address
       )
-      .required(),
+      .required("Address is required"),
   });
   const contract = {
     addressOrName: "0x5FbDB2315678afecb367f032d93F642f64180aa3",
@@ -115,7 +115,7 @@ export const ContinentModal = ({
       buttonsStyling: false,
       customClass: {
         confirmButton:
-          "inline-flex text-slate-100 bg-lime-700 hover:bg-lime-600 focus:bg-lime-500 disabled:bg-stone-700 font-medium rounded-sm text-sm px-3 py-2 space-x-2 mx-2",
+          "inline-flex text-slate-100 bg-lime-700 hover:bg-lime-600 disabled:bg-stone-700 font-medium rounded-sm text-sm px-3 py-2 space-x-2 mx-2",
         cancelButton:
           "inline-flex text-slate-100 bg-red-700 hover:bg-red-600 focus:bg-red-500 disabled:bg-stone-700 font-medium rounded-sm text-sm px-3 py-2 space-x-2",
       },
@@ -206,6 +206,7 @@ export const ContinentModal = ({
     ["Region", continentSelected],
     () => fetch(fetchURL).then((res) => res.json())
   );
+
   const isDisabled = useMemo(
     () =>
       aquireContractLoading ||
@@ -213,6 +214,7 @@ export const ContinentModal = ({
       relinquishContinentLoading,
     [aquireContractLoading, relinquishContinentLoading, tranferContinentLoading]
   );
+
   const NextArrow = (props: {
     className?: string;
     style?: React.CSSProperties;
@@ -227,9 +229,8 @@ export const ContinentModal = ({
           "bg-slate-900 text-lg text-slate-100 z-10 x-5 w-10"
         )}
         onClick={onClick}
-        style={{ ...style, display: "block", background: "green" }}
       >
-        <Image src={chevron} alt="next slide" />
+        <Image height={100} width={100} src={chevron} alt="next slide" />
       </div>
     );
   };
@@ -247,7 +248,6 @@ export const ContinentModal = ({
           "bg-slate-900 text-lg text-slate-100 z-10 x-5"
         )}
         onClick={onClick}
-        style={{ ...style, display: "block", background: "green" }}
       >
         chevron
         <Image src={chevron} alt="next slide" />
@@ -268,146 +268,154 @@ export const ContinentModal = ({
   Modal.setAppElement("#__next");
 
   return (
-    <Modal
-      id="modal"
-      isOpen={isModalOpen}
-      shouldFocusAfterRender={true}
-      shouldCloseOnOverlayClick={true}
-      shouldCloseOnEsc={true}
-      onAfterOpen={() => {
-        document.getElementById("modal")?.focus();
-      }}
-      onRequestClose={() => setIsModalOpen(false)}
-      contentLabel="Modal"
-      overlayClassName="w-screen h-screen fixed top-0 left-0 bg-slate-400 bg-opacity-60"
-      className="w-3/6 absolute left-1/4 top-1/4 bg-slate-100 rounded-lg shadow-lg max-h-80 overflow-hidden"
-    >
-      <Slider {...sliderSettings}>
-        <div>
-          <div className="grid grid-flow-row-dense grid-cols-5">
-            <div className="relative overflow-hidden rounded-l-lg col-span-2">
-              <ContinentInfo
-                continentSelected={continentSelected}
-                className="z-10 p-6 relative bg-opacity-60 bg-slate-900 text-slate-100 inset-0"
-              />
-              <Image
-                layout="fill"
-                className="object-center object-cover pointer-events-none bg-slate-600"
-                src={getCoverImage(continentSelected)}
-                alt={`an image from ${continentSelected}`}
-                priority
-              />
-            </div>
+    <div className="w-max h-max">
+      <Modal
+        id="modal"
+        isOpen={isModalOpen}
+        shouldFocusAfterRender={true}
+        shouldCloseOnOverlayClick={true}
+        shouldCloseOnEsc={true}
+        onAfterOpen={() => {
+          document.getElementById("modal")?.focus();
+        }}
+        onRequestClose={() => setIsModalOpen(false)}
+        contentLabel="Modal"
+        overlayClassName="w-screen h-screen fixed top-0 left-0 bg-slate-400 bg-opacity-60"
+        className="w-3/6 relative mx-auto top-1/4 bg-slate-100 rounded-lg shadow-lg max-h-80 max-w-4xl"
+      >
+        <Slider {...sliderSettings}>
+          <div className="overflow-hidden rounded-lg">
+            <div className="grid grid-flow-row-dense grid-cols-5">
+              <div className="relative overflow-hidden rounded-l-lg col-span-2">
+                <ContinentInfo
+                  continentSelected={continentSelected}
+                  className="z-10 p-6 relative bg-opacity-60 bg-slate-900 text-slate-100 inset-0"
+                />
+                <Image
+                  layout="fill"
+                  className="object-center object-cover pointer-events-none bg-slate-600"
+                  src={getCoverImage(continentSelected)}
+                  alt={`an image from ${continentSelected}`}
+                  priority
+                />
+              </div>
 
-            <div className="flex flex-col place-content-between p-6 col-span-3">
-              <div className="mb-6">{flavourText(continentSelected)}</div>
-              {accountData &&
-                getContinentStatus(continentSelected) === Status.Unowned && (
-                  <div>
-                    <Button
-                      className="bg-lime-700 hover:bg-lime-600 focus:bg-lime-500 text-slate-100 font-bold py-2 px-4 float-right"
-                      onClick={async () => {
-                        callAcquireContinent(continentSelected, priceData);
-                      }}
-                      disabled={isDisabled}
-                    >
-                      <div className="flex space-x-2">
-                        <span className="font-normal">
-                          {gweiFormatter(priceData?.toString()).amount}
-                          {gweiFormatter(priceData?.toString()).symbol}
-                        </span>
-                        <span>BUY</span>
-                      </div>
-                    </Button>
-                  </div>
-                )}
-              {accountData &&
-                getContinentStatus(continentSelected) === Status.OwnedByYou && (
-                  <div>
-                    <Formik
-                      initialValues={{
-                        address: "",
-                      }}
-                      onSubmit={(
-                        values: Values,
-                        { setSubmitting }: FormikHelpers<Values>
-                      ) => {
-                        if (accountData) {
-                          callTransferContinent(
-                            accountData.address,
-                            values.address,
-                            continentSelected
-                          );
-                        }
-                        setSubmitting(false);
-                      }}
-                      validationSchema={schema}
-                    >
-                      {(props) => {
-                        return (
-                          <span className="flex space-x-4">
-                            <Button
-                              className="float-left bg-red-700 hover:bg-red-600 focus:bg-red-500 text-white"
-                              onClick={() => {
-                                callRelinquishContinent(continentSelected);
-                              }}
-                            >
-                              Relinquish
-                            </Button>
-                            <Form className="flex">
-                              <div className="align-text-top flex place-content-between space-x-2">
-                                <div className="text-red-700 absolute bottom-20 pl-4">
-                                  {props.errors.address && props.errors.address}
-                                </div>
-                                <Field
-                                  id="address"
-                                  name="address"
-                                  placeholder="Recipient address"
-                                  className="text-slate-900 bg-white border-2 border-slate-300 rounded-sm px-2"
-                                />
-                                <Button
-                                  type="submit"
-                                  disabled={!(props.isValid && props.dirty)}
-                                  className="bg-lime-700 hover:bg-lime-600 focus:bg-lime-500 text-slate-100 float-right"
-                                >
-                                  Transfer
-                                </Button>
-                              </div>
-                            </Form>
+              <div className="flex flex-col place-content-between p-6 col-span-3">
+                <div className="mb-6">{flavourText(continentSelected)}</div>
+                {accountData &&
+                  getContinentStatus(continentSelected) === Status.Unowned && (
+                    <div>
+                      <Button
+                        className="bg-lime-700 hover:bg-lime-600 focus:bg-lime-500 text-slate-100 font-bold py-2 px-4 float-right"
+                        onClick={async () => {
+                          callAcquireContinent(continentSelected, priceData);
+                        }}
+                        disabled={isDisabled}
+                      >
+                        <div className="flex space-x-2">
+                          <span className="font-normal">
+                            {gweiFormatter(priceData?.toString()).amount}
+                            {gweiFormatter(priceData?.toString()).symbol}
                           </span>
-                        );
-                      }}
-                    </Formik>
-                  </div>
-                )}
-              {accountData &&
-                getContinentStatus(continentSelected) ===
-                  Status.OwnedBySomeoneElse && (
-                  <span>
-                    <Address
-                      text={getOwnerAddress(continentSelected)}
-                      chainId={networkData?.chain?.id}
-                    />
-                    <Button
-                      className="bg-lime-700 hover:bg-lime-600 focus:bg-lime-500 text-slate-100 font-semibold py-2 px-4 float-right"
-                      disabled={true}
-                    >
-                      <div className="flex space-x-2">
-                        <span className="font-normal">
-                          {gweiFormatter(priceData?.toString()).amount}
-                          {gweiFormatter(priceData?.toString()).symbol}
-                        </span>
-                        <span>BUY</span>
-                      </div>
-                    </Button>
-                  </span>
-                )}
+                          <span>BUY</span>
+                        </div>
+                      </Button>
+                    </div>
+                  )}
+                {accountData &&
+                  getContinentStatus(continentSelected) ===
+                    Status.OwnedByYou && (
+                    <div>
+                      <Formik
+                        initialValues={{
+                          address: "",
+                        }}
+                        onSubmit={(
+                          values: Values,
+                          { setSubmitting }: FormikHelpers<Values>
+                        ) => {
+                          if (accountData) {
+                            callTransferContinent(
+                              accountData.address,
+                              values.address,
+                              continentSelected
+                            );
+                          }
+                          setSubmitting(false);
+                        }}
+                        validationSchema={schema}
+                      >
+                        {(props) => {
+                          return (
+                            <span className="flex space-x-4">
+                              <Button
+                                className="float-left bg-red-700 hover:bg-red-600 focus:bg-red-500 text-white"
+                                onClick={() => {
+                                  callRelinquishContinent(continentSelected);
+                                }}
+                              >
+                                Relinquish
+                              </Button>
+                              <Form className="flex">
+                                <div className="align-text-top flex place-content-between space-x-2">
+                                  <div className="text-red-700 absolute bottom-20 pl-4">
+                                    {props.errors.address &&
+                                      props.errors.address}
+                                  </div>
+                                  <Field
+                                    id="address"
+                                    name="address"
+                                    placeholder="Recipient address"
+                                    className="text-slate-900 bg-white border-2 border-slate-300 rounded-sm px-2"
+                                  />
+                                  <Button
+                                    type="submit"
+                                    disabled={!(props.isValid && props.dirty)}
+                                    className="bg-lime-700 hover:bg-lime-600 focus:bg-lime-500 text-slate-100 float-right"
+                                  >
+                                    Transfer
+                                  </Button>
+                                </div>
+                              </Form>
+                            </span>
+                          );
+                        }}
+                      </Formik>
+                    </div>
+                  )}
+                {accountData &&
+                  getContinentStatus(continentSelected) ===
+                    Status.OwnedBySomeoneElse && (
+                    <span>
+                      <Address
+                        text={getOwnerAddress(continentSelected)}
+                        chainId={networkData?.chain?.id}
+                      />
+                      <Button
+                        className="bg-lime-700 hover:bg-lime-600 focus:bg-lime-500 text-slate-100 font-semibold py-2 px-4 float-right"
+                        disabled={true}
+                      >
+                        <div className="flex space-x-2">
+                          <span className="font-normal">
+                            {gweiFormatter(priceData?.toString()).amount}
+                            {gweiFormatter(priceData?.toString()).symbol}
+                          </span>
+                          <span>BUY</span>
+                        </div>
+                      </Button>
+                    </span>
+                  )}
+              </div>
             </div>
           </div>
-        </div>
-        {/* Second slide */}
-        {data && <CountryDataView data={data} />}
-      </Slider>
-    </Modal>
+          {/* Second slide */}
+          {data && (
+            <div className="overflow-hidden rounded-lg">
+              <CountryDataView data={data} />
+            </div>
+          )}
+        </Slider>
+      </Modal>
+    </div>
   );
 };
