@@ -21,7 +21,11 @@ const connectors = () => {
           id: 4,
           name: "rinkeby",
           testnet: true,
-          rpcUrls: [process.env.RINKEBY_URL ? process.env.RINKEBY_URL : ""],
+          rpcUrls: [
+            process.env.NEXT_PUBLIC_RINKEBY_URL
+              ? process.env.NEXT_PUBLIC_RINKEBY_URL
+              : "",
+          ],
         },
       ],
       options: { shimDisconnect: true },
