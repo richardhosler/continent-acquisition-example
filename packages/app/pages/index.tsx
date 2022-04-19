@@ -24,14 +24,14 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "react-loading-skeleton/dist/skeleton.css";
 import { ContinentModal } from "../components/ContinentModal";
-
+const contractAddress =
+  process.env.CONTRACT_ADDRESS && process.env.NODE_ENV === "production"
+    ? process.env.CONTRACT_ADDRESS
+    : "0x5FbDB2315678afecb367f032d93F642f64180aa3";
 const Home: NextPage = () => {
   const provider = useProvider();
   const contract = {
-    addressOrName:
-      process.env.CONTRACT_ADDRESS && process.env.NODE_ENV === "production"
-        ? process.env.CONTRACT_ADDRESS
-        : "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+    addressOrName: contractAddress,
     contractInterface: continentToken.abi,
     signerOrProvider: provider,
   };

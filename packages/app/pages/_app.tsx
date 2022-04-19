@@ -1,37 +1,22 @@
 import { providers } from "ethers";
 import { Toaster } from "react-hot-toast";
-import {
-  Provider as WalletProvider,
-  chain,
-  defaultChains,
-  Connector,
-} from "wagmi";
+import { Provider as WalletProvider, defaultChains, Connector } from "wagmi";
 import { InjectedConnector } from "wagmi/connectors/injected";
 import { WalletConnectConnector } from "wagmi/connectors/walletConnect";
-import {
-  Hydrate,
-  QueryClient,
-  QueryClientProvider,
-  useQuery,
-} from "react-query";
-
+import { Hydrate, QueryClient, QueryClientProvider } from "react-query";
 import "../styles/globals.css";
 
-// API key for Ethereum node
-// Two popular services are Infura (infura.io) and Alchemy (alchemy.com)
-const infuraId = process.env.INFURA_ID;
-const chains = defaultChains;
 const queryClient = new QueryClient();
 const connectors = () => {
   return [
     new InjectedConnector({
       chains: [
-        {
-          id: 31337,
-          name: "hardhat",
-          testnet: true,
-          rpcUrls: ["http://localhost:8545"],
-        },
+        // {
+        //   id: 31337,
+        //   name: "hardhat",
+        //   testnet: true,
+        //   rpcUrls: ["http://localhost:8545"],
+        // },
         {
           id: 4,
           name: "rinkeby",
@@ -43,7 +28,7 @@ const connectors = () => {
     }),
     new WalletConnectConnector({
       options: {
-        infuraId,
+        chainId: 4,
         qrcode: true,
       },
     }),
