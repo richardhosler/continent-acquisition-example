@@ -5,7 +5,8 @@
     "start": "npx lerna run dev --stream --parallel",
     "bootstrap": "npx lerna bootstrap",
     "hhn": "cd packages/contract && npx hardhat node",
-    "hhd": "cd packages/contract && npx hardhat run --network localhost scripts/deploy.js"
+    "hhd": "cd packages/contract && npx hardhat run --network localhost scripts/deploy.js",
+    "build": "cd packages/contract && waffle"
   },
   "devDependencies": {
     "lerna": "^4.0.0"
