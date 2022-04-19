@@ -23,7 +23,7 @@ contract ContinentToken is ERC721 {
         _continents["NA"] = Continent("North America", address(0));
         _continents["OC"] = Continent("Oceania", address(0));
         _continents["SA"] = Continent("South America", address(0));
-        _currentPrice = 100000000000000000;
+        _currentPrice = 1000000000000000;
     }
 
     function acquireContinent(bytes2 ISO) public payable {
@@ -34,7 +34,7 @@ contract ContinentToken is ERC721 {
         );
         _safeMint(msg.sender, uint256(keccak256(abi.encode(ISO))));
         _continents[ISO].owner = msg.sender;
-        _currentPrice += 100000000000000000;
+        _currentPrice += 1000000000000000;
         emit ContinentSold(msg.sender, ISO);
     }
 
