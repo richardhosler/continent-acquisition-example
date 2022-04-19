@@ -32,6 +32,12 @@ const connectors = () => {
           testnet: true,
           rpcUrls: ["http://localhost:8545"],
         },
+        {
+          id: 4,
+          name: "rinkeby",
+          testnet: true,
+          rpcUrls: [process.env.RINKEBY_URL ? process.env.RINKEBY_URL : ""],
+        },
       ],
       options: { shimDisconnect: true },
     }),
