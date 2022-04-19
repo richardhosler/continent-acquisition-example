@@ -2,7 +2,7 @@ import Image from "next/image";
 import githubIcon from "../assets/icons/github.svg";
 export const Footer = () => {
   return (
-    <div className="flex fixed bottom-0 w-screen text-slate-700 p-4 place-content-center space-x-1">
+    <div className="flex fixed bottom-0 w-screen text-slate-500 p-4 place-content-center space-x-1">
       <span>
         Example project by{" "}
         <a
