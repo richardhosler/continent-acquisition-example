@@ -146,7 +146,7 @@ const Home: NextPage = () => {
 
   return (
     <>
-      <ReactTooltip backgroundColor={colors.slate[800]}>
+      <ReactTooltip backgroundColor={colors.slate[800]} id="floater">
         {tooltipContent}
       </ReactTooltip>
       <Header

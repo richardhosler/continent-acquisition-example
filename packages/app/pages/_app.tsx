@@ -63,12 +63,10 @@ const provider = ({ chainId, connector }: GetProviderArgs) => {
 function MyApp({ Component, pageProps }: { Component: any; pageProps: any }) {
   return (
     <WalletProvider autoConnect connectors={connectors} provider={provider}>
-      <QueryClientProvider client={queryClient}>
-        <Hydrate state={pageProps.dehydratedState}>
-          <Toaster position="bottom-right" reverseOrder={true} />
-          <Component {...pageProps} />
-        </Hydrate>
-      </QueryClientProvider>
+      <QueryClientProvider client={queryClient} />
+      <Hydrate state={pageProps.dehydratedState} />
+      <Toaster position="bottom-right" reverseOrder={true} />
+      <Component {...pageProps} />
     </WalletProvider>
   );
 }

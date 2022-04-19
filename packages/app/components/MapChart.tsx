@@ -32,7 +32,7 @@ const MapChart = ({
   };
 
   const getContinentColour = (iso: string, hover: boolean) => {
-    if (!accountData) return colors.slate[400];
+    if (!accountData) return "#CCC";
     if (hover) {
       switch (getOwnerAddress(iso)) {
         case accountData.address:
@@ -47,9 +47,9 @@ const MapChart = ({
         case accountData.address:
           return colors.yellow["600"];
         case "0x0000000000000000000000000000000000000000":
-          return colors.green["500"];
+          return colors.green["600"];
         default:
-          return colors.green["500"];
+          return colors.green["600"];
       }
     }
   };

@@ -56,6 +56,7 @@ export const Header = ({
           className="space-x-1 place-self-center"
           data-place="bottom"
           data-effect="float"
+          data-for="floater"
           data-tip="Current price of each continent, will increase with each continent purchased"
         >
           <span>{currentPrice?.amount}</span>

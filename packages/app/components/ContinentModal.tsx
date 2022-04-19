@@ -26,6 +26,7 @@ import { truncateString } from "../utils/truncateString";
 import { object, string } from "yup";
 import { useQuery } from "react-query";
 import { CountryInterface } from "../utils/restCountriesInterface";
+import ReactTooltip from "react-tooltip";
 
 enum Status {
   OwnedByYou,
@@ -272,6 +273,7 @@ export const ContinentModal = ({
 
   return (
     <div className="w-max h-max">
+      {/* <ReactTooltip id="error" role=""/> */}
       <Modal
         id="modal"
         isOpen={isModalOpen}
@@ -279,6 +281,7 @@ export const ContinentModal = ({
         shouldCloseOnOverlayClick={true}
         shouldCloseOnEsc={true}
         onAfterOpen={() => {
+          ReactTooltip.rebuild();
           document.getElementById("modal")?.focus();
         }}
         onRequestClose={() => setIsModalOpen(false)}

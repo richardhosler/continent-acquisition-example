@@ -30,6 +30,7 @@ export const Address = ({
       className={classes}
       data-tip={text}
       data-place="bottom"
+      data-for="floater"
       data-effect="float"
       href={
         chainId === 4

@@ -48,7 +48,7 @@ export const CountryDataView = ({
     state: {
       sorting,
     },
-    onSortingChange: setSorting, //TODO: get rid of the red squiggly line
+    onSortingChange: () => setSorting,
     sortRowsFn: sortRowsFn,
   });
 
