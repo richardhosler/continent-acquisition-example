@@ -71,7 +71,7 @@ export const Header = ({
         {networkData.chain?.unsupported && '(unsupported)'} */}
         {/* <DarkModeToggle /> */}
         {/* if not connected to a wallet */}
-        <span className="place-self-end">
+        <span className="place-self-end space-x-2">
           {address === undefined ? (
             connectors.map((connector: Connector) => (
               <Button
