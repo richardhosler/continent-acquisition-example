@@ -31,7 +31,7 @@ const Home: NextPage = () => {
     if (provider.network) {
       switch (provider.network.chainId) {
         case 4:
-          return "0xB1f80EC9887616EADB2fcf1C55E120dAC878bbc4";
+          return "0xE5047b2c151076Ec2eC43Cc532DA770f00512ddE";
       }
     }
     return "0x5FbDB2315678afecb367f032d93F642f64180aa3";
