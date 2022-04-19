@@ -28,7 +28,10 @@ import { ContinentModal } from "../components/ContinentModal";
 const Home: NextPage = () => {
   const provider = useProvider();
   const contract = {
-    addressOrName: "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+    addressOrName:
+      process.env.CONTRACT_ADDRESS && process.env.NODE_ENV === "production"
+        ? process.env.CONTRACT_ADDRESS
+        : "0x5FbDB2315678afecb367f032d93F642f64180aa3",
     contractInterface: continentToken.abi,
     signerOrProvider: provider,
   };
