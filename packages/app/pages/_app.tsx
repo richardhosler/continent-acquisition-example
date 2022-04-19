@@ -5,29 +5,36 @@ import { InjectedConnector } from "wagmi/connectors/injected";
 import { WalletConnectConnector } from "wagmi/connectors/walletConnect";
 import { Hydrate, QueryClient, QueryClientProvider } from "react-query";
 import "../styles/globals.css";
+import { env } from "process";
 
 const queryClient = new QueryClient();
 const connectors = () => {
+  const chains = [
+    {
+      id: 4,
+      name: "rinkeby",
+      testnet: true,
+      rpcUrls: [
+        process.env.NEXT_PUBLIC_RINKEBY_URL
+          ? process.env.NEXT_PUBLIC_RINKEBY_URL
+          : "",
+      ],
+    },
+  ];
+
+  if (process.env.NODE_ENV === "development") {
+    chains.push({
+      id: 31337,
+      name: "hardhat",
+      testnet: true,
+      rpcUrls: ["http://localhost:8545"],
+    });
+  }
+  console.log(process.env.NODE_ENV);
+
   return [
     new InjectedConnector({
-      chains: [
-        // {
-        //   id: 31337,
-        //   name: "hardhat",
-        //   testnet: true,
-        //   rpcUrls: ["http://localhost:8545"],
-        // },
-        {
-          id: 4,
-          name: "rinkeby",
-          testnet: true,
-          rpcUrls: [
-            process.env.NEXT_PUBLIC_RINKEBY_URL
-              ? process.env.NEXT_PUBLIC_RINKEBY_URL
-              : "",
-          ],
-        },
-      ],
+      chains,
       options: { shimDisconnect: true },
     }),
     new WalletConnectConnector({
