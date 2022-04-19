@@ -34,7 +34,7 @@ const Home: NextPage = () => {
     contractInterface: continentToken.abi,
     signerOrProvider: provider,
   };
-  console.log({ contract });
+  console.log({ contract, process });
 
   const [tooltipContent, setTooltipContent] = useState("");
   const [continentSelected, setContinent] = useState("");
