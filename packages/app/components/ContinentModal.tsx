@@ -4,7 +4,6 @@ import { Field, Form, Formik } from "formik";
 import Slider from "react-slick";
 import { twMerge } from "tailwind-merge";
 import Image from "next/image";
-import chevron from "../assets/icons/chevron.svg";
 import { CountryDataView } from "../components/CountryData";
 import { ContinentInfo } from "../components/ContinentInfo";
 import { Address } from "../components/Address";
@@ -230,7 +229,7 @@ export const ContinentModal = ({
         )}
         onClick={onClick}
       >
-        <Image height={100} width={100} src={chevron} alt="next slide" />
+        {/* <Image height={100} width={100} src={chevron} alt="next slide" /> */}
       </div>
     );
   };
@@ -249,8 +248,7 @@ export const ContinentModal = ({
         )}
         onClick={onClick}
       >
-        chevron
-        <Image src={chevron} alt="next slide" />
+        {/* <Image src={chevron} alt="next slide" /> */}
       </div>
     );
   };

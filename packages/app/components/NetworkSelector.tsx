@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { twMerge } from "tailwind-merge";
 import { WagmiNetworkDataInterface } from "../interfaces/WagmiNetworkDataInterface";
-import chevron from "../assets/icons/chevron.svg";
-import Image from "next/image";
+import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 interface NetworkSelectorInterface {
   onSwitchNetwork: (chainId: number) => void;
   networkData: WagmiNetworkDataInterface;
@@ -14,23 +14,22 @@ export const NetworkSelector = ({
 }: NetworkSelectorInterface) => {
   console.log(networkData.chains);
   const [isMenuVisible, setIsMenuVisible] = useState(false);
-  const toggleMenu = () => setIsMenuVisible(!isMenuVisible);
+
   return (
-    <div className="inline-flex relative font-normal text-sm">
+    <div className="inline-flex relative font-normal text-sm capitalize">
       <button
         className={
           isMenuVisible
-            ? "inline-flex space-x-4 place-content-between bg-slate-700 text-slate-100 rounded-t-sm px-3 py-2 w-[100px] hover:bg-slate-600"
-            : "inline-flex space-x-4 place-content-between bg-slate-700 text-slate-100 rounded-sm px-3 py-2 w-[100px]"
+            ? "flex flex-row space-x-2 place-items-center bg-slate-700 text-slate-100 rounded-t-sm px-3 py-2 w-[100px] hover:bg-slate-600"
+            : "flex flex-row space-x-2 place-items-center bg-slate-700 text-slate-100 rounded-sm px-3 py-2 w-[100px] hover:bg-slate-600"
         }
         id="menu-button"
         aria-expanded="true"
         aria-haspopup="true"
-        onClick={toggleMenu}
-        onBlur={toggleMenu}
+        onClick={() => setIsMenuVisible(!isMenuVisible)}
       >
-        <span>{networkData.chain?.name}</span>
-        {<Image src={chevron} alt="chevron" width={10} height={10}></Image>}
+        <span>Network</span>
+        <FontAwesomeIcon icon={isMenuVisible ? faChevronUp : faChevronDown} />
       </button>
 
       <div
@@ -39,13 +38,21 @@ export const NetworkSelector = ({
         aria-labelledby="menu-button"
         tabIndex={-1}
         className={twMerge(
-          "absolute bg-slate-100 right-0 top-9 w-[100px] text-center text-slate-800 rounded-b-sm  py-2 drop-shadow-xl",
+          "absolute bg-slate-100 right-0 top-9 w-[100px] text-center text-slate-800 rounded-b-sm pb-2 drop-shadow-xl",
           `${isMenuVisible ? "block" : "hidden"}`
         )}
       >
         <div role="none" className="">
           {networkData.chains.map((chain, key) =>
-            chain.id === networkData.chain?.id ? null : (
+            chain.id === networkData.chain?.id ? (
+              <a
+                key={key}
+                href="#"
+                className="block bg-slate-700 text-slate-100 py-2 border-t border-slate-500"
+              >
+                {chain.name}
+              </a>
+            ) : (
               <a
                 key={key}
                 href="#"
