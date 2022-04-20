@@ -1,4 +1,4 @@
-import { MouseEventHandler } from "react";
+import { useRef } from "react";
 import Modal from "react-modal";
 import { Field, Form, Formik } from "formik";
 import Slider from "react-slick";
@@ -18,7 +18,6 @@ import { Result } from "ethers/lib/utils";
 import continentToken from "../../contract/build/ContinentToken.json";
 import { useProvider } from "wagmi";
 import { gweiFormatter } from "../utils/gweiFormatter";
-import { convertStringToByteArray } from "../utils/convertStringToByteArray";
 import colors from "tailwindcss/colors";
 import Swal from "sweetalert2";
 import { truncateString } from "../utils/truncateString";
@@ -26,12 +25,17 @@ import { object, string } from "yup";
 import { useQuery } from "react-query";
 import { CountryInterface } from "../utils/restCountriesInterface";
 import ReactTooltip from "react-tooltip";
-import { CallOverrides, ethers } from "ethers";
 import {
   WagmiContractWriteConfig,
   WagmiContractWriteResponse,
   WagmiContractWriteResponseError,
-} from "../interfaces/wagmiContractWriteInterface";
+} from "../interfaces/WagmiContractWriteInterface";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faChevronLeft,
+  faChevronRight,
+} from "@fortawesome/free-solid-svg-icons";
+import { ethers } from "ethers";
 
 type WagmiContractWriteType = (
   config: WagmiContractWriteConfig
@@ -128,7 +132,7 @@ export const ContinentModal = ({
     }).then(async (result) => {
       if (result.value) {
         const transaction = await onAquireContinent({
-          args: convertStringToByteArray({ text: iso }),
+          args: ethers.utils.formatBytes32String(iso),
           overrides: { from: accountData?.address, value: price },
         });
         if (transaction.data?.hash) {
@@ -153,7 +157,7 @@ export const ContinentModal = ({
     }).then(async (result) => {
       if (result.value) {
         const transaction = await onRelinquishContinent({
-          args: convertStringToByteArray({ text: iso }),
+          args: ethers.utils.formatBytes32String(iso),
         });
         if (transaction.data?.hash) {
           onWait({ hash: transaction.data.hash });
@@ -185,7 +189,7 @@ export const ContinentModal = ({
     }).then(async (result) => {
       if (result.value) {
         const transaction = await onTransferContinent({
-          args: [from, to, convertStringToByteArray({ text: iso })],
+          args: [from, to, ethers.utils.formatBytes32String(iso)],
         });
         if (transaction.data?.hash) {
           onWait({ hash: transaction.data.hash });
@@ -213,64 +217,46 @@ export const ContinentModal = ({
     ["Region", continentSelected],
     () => fetch(fetchURL).then((res) => res.json())
   );
-
-  const NextArrow = (props: {
-    className?: string;
-    style?: React.CSSProperties;
-    onClick?: MouseEventHandler;
-  }) => {
-    const { className, style, onClick } = props;
-
-    return (
-      <div
-        className={twMerge(
-          className,
-          "bg-slate-900 text-lg text-slate-100 z-10 x-5 w-10"
-        )}
-        onClick={onClick}
-      >
-        {/* <Image height={100} width={100} src={chevron} alt="next slide" /> */}
-      </div>
-    );
+  const sliderRef = useRef<Slider | null>(null);
+  const slickNext = () => {
+    sliderRef.current?.slickNext();
   };
-
-  const PrevArrow = (props: {
-    className?: string;
-    style?: React.CSSProperties;
-    onClick?: MouseEventHandler;
-  }) => {
-    const { className, style, onClick } = props;
-    return (
-      <div
-        className={twMerge(
-          className,
-          "bg-slate-900 text-lg text-slate-100 z-10 x-5"
-        )}
-        onClick={onClick}
-      >
-        {/* <Image src={chevron} alt="next slide" /> */}
-      </div>
-    );
+  const slickPrev = () => {
+    sliderRef.current?.slickPrev();
   };
-
   const sliderSettings = {
     dots: false,
     infinite: true,
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
-    arrows: true,
-    // nextArrow: <NextArrow />,
-    // prevArrow: <PrevArrow />,
+    arrows: false,
   };
 
   Modal.setAppElement("#__next");
 
   const continentStatus = getContinentStatus(continentSelected);
-
+  const chevronClasses =
+    "absolute p-1 py-4 z-50 -mt-10 top-1/2 cursor-pointer select-none text-slate-800 hover:text-slate-700";
   return (
     <div className="w-max h-max">
-      {/* <ReactTooltip id="error" role=""/> */}
+      {isModalOpen && (
+        <>
+          <div
+            onClick={slickNext}
+            className={twMerge(chevronClasses, "lg:right-[20%] right-0")}
+          >
+            <FontAwesomeIcon icon={faChevronRight} />
+          </div>
+          <div
+            onClick={slickPrev}
+            className={twMerge(chevronClasses, "lg:left-[20%] left-0")}
+          >
+            <FontAwesomeIcon icon={faChevronLeft} />
+          </div>
+        </>
+      )}
+      <ReactTooltip id="error" />
       <Modal
         id="modal"
         isOpen={isModalOpen}
@@ -279,14 +265,13 @@ export const ContinentModal = ({
         shouldCloseOnEsc={true}
         onAfterOpen={() => {
           ReactTooltip.rebuild();
-          document.getElementById("modal")?.focus();
         }}
         onRequestClose={() => setIsModalOpen(false)}
         contentLabel="Modal"
         overlayClassName="w-screen h-screen fixed top-0 left-0 bg-slate-400 bg-opacity-60"
-        className="w-3/6 relative mx-auto top-1/4 bg-slate-100 rounded-lg shadow-lg max-h-80 max-w-4xl"
+        className="w-[800px] fixed inset-0 overflow-hidden m-auto bg-slate-100 rounded-lg shadow-lg max-h-80 max-w-4xl"
       >
-        <Slider {...sliderSettings}>
+        <Slider {...sliderSettings} ref={sliderRef}>
           <div className="overflow-hidden rounded-lg">
             <div className="grid grid-flow-row-dense grid-cols-5">
               <div className="relative overflow-hidden rounded-l-lg col-span-2">
@@ -332,23 +317,18 @@ export const ContinentModal = ({
                       initialValues={{
                         address: "",
                       }}
-                      onSubmit={(
-                        values: Values
-                        // { setSubmitting }: FormikHelpers<Values>
-                      ) => {
+                      onSubmit={(values: Values) => {
                         callTransferContinent(
                           accountData.address,
                           values.address,
                           continentSelected
                         );
-
-                        // setSubmitting(false);
                       }}
                       validationSchema={schema}
                     >
                       {(props) => {
                         return (
-                          <span className="flex space-x-4">
+                          <div className="flex space-x-4 place-content-between">
                             <Button
                               className="float-left bg-red-700 hover:bg-red-600 focus:bg-red-500 text-white"
                               onClick={() => {
@@ -357,37 +337,44 @@ export const ContinentModal = ({
                             >
                               Relinquish
                             </Button>
-                            <Form className="flex">
-                              <div className="align-text-top flex place-content-between space-x-2">
-                                <div className="text-red-700 absolute bottom-20 pl-4">
-                                  {props.errors.address && props.errors.address}
+                            <div>
+                              <Form className="flex">
+                                <div className="relative align-text-top flex place-content-between space-x-2">
+                                  {props.errors.address && (
+                                    <div className="text-slate-100 absolute bottom-11 left-2 bg-red-700 rounded-sm drop-shadow-lg px-3 font-normal text-sm py-1">
+                                      <div className="bg-red-700 rotate-45 absolute w-3 h-3 left-12 top-5 -z-10" />
+                                      {props.errors.address &&
+                                        props.errors.address}
+                                    </div>
+                                  )}
+                                  <Field
+                                    id="address"
+                                    name="address"
+                                    placeholder="Recipient address"
+                                    className="text-slate-900 bg-white border-2 border-slate-300 rounded-sm px-2 outline:none focus:outline-none"
+                                  />
+                                  <Button
+                                    type="submit"
+                                    disabled={!(props.isValid && props.dirty)}
+                                    className="bg-lime-700 hover:bg-lime-600 focus:bg-lime-500 text-slate-100 float-right"
+                                  >
+                                    Transfer
+                                  </Button>
                                 </div>
-                                <Field
-                                  id="address"
-                                  name="address"
-                                  placeholder="Recipient address"
-                                  className="text-slate-900 bg-white border-2 border-slate-300 rounded-sm px-2 outline:none focus:outline-none"
-                                />
-                                <Button
-                                  type="submit"
-                                  disabled={!(props.isValid && props.dirty)}
-                                  className="bg-lime-700 hover:bg-lime-600 focus:bg-lime-500 text-slate-100 float-right"
-                                >
-                                  Transfer
-                                </Button>
-                              </div>
-                            </Form>
-                          </span>
+                              </Form>
+                            </div>
+                          </div>
                         );
                       }}
                     </Formik>
                   </div>
                 )}
                 {accountData && continentStatus === Status.OwnedBySomeoneElse && (
-                  <span>
+                  <div>
                     <Address
                       text={getOwnerAddress(continentSelected)}
                       chainId={networkData?.chain?.id}
+                      className="py-1 bg-transparent"
                     />
                     <Button
                       className="bg-lime-700 hover:bg-lime-600 focus:bg-lime-500 text-slate-100 font-semibold py-2 px-4 float-right"
@@ -401,7 +388,7 @@ export const ContinentModal = ({
                         <span>BUY</span>
                       </div>
                     </Button>
-                  </span>
+                  </div>
                 )}
               </div>
             </div>
