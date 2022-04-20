@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import type { NextPage } from "next";
 import toast from "react-hot-toast";
 import ReactTooltip from "react-tooltip";
@@ -74,7 +74,13 @@ const Home: NextPage = () => {
     },
     wait,
   ] = useWaitForTransaction({ skip: true });
-
+  const isSubmissionDisabled = useMemo(
+    () =>
+      aquireContractLoading ||
+      tranferContinentLoading ||
+      relinquishContinentLoading,
+    [aquireContractLoading, relinquishContinentLoading, tranferContinentLoading]
+  );
   const [isModalOpen, setIsModalOpen] = useState(false);
   const handleTooltipChange = (content: string) => {
     ReactTooltip.rebuild();
@@ -183,6 +189,11 @@ const Home: NextPage = () => {
         priceData={priceData}
         isModalOpen={isModalOpen}
         setIsModalOpen={setIsModalOpen}
+        onAquireContinent={acquireContractCall}
+        onRelinquishContinent={relinquishContinentCall}
+        onTransferContinent={transferContinentCall}
+        onWait={wait}
+        isSubmissionDisabled={isSubmissionDisabled}
       />
     </>
   );

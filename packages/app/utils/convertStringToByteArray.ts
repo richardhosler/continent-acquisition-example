@@ -1,12 +1,15 @@
-interface convertStringToByteArrayInterface {
-  s: string;
+interface ConvertStringToByteArrayInterface {
+  text: string;
 }
+
 export const convertStringToByteArray = ({
-  s,
-}: convertStringToByteArrayInterface): Uint8Array => {
-  var result = new Uint8Array(s.length);
-  for (var i = 0; i < s.length; i++) {
-    result[i] = s.charCodeAt(i);
+  text,
+}: ConvertStringToByteArrayInterface): Uint8Array => {
+  let result = new Uint8Array(text.length);
+
+  for (var i = 0; i < text.length; i++) {
+    result[i] = text.charCodeAt(i);
   }
+
   return result;
 };
