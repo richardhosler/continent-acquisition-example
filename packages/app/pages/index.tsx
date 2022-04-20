@@ -168,9 +168,9 @@ const Home: NextPage = () => {
         address={accountData?.address}
         networkData={networkData}
         connectors={connectData.connectors}
-        handleConnect={handleConnect}
-        handleDisconnect={handleDisconnect}
-        handleSwitchNetwork={handleSwitchNetwork}
+        onConnect={handleConnect}
+        onDisconnect={handleDisconnect}
+        onSwitchNetwork={handleSwitchNetwork}
         currentPrice={gweiFormatter(priceData?.toString())}
       />
       <Footer />

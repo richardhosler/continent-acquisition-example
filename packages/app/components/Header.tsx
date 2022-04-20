@@ -8,15 +8,17 @@ import { CurrencyInterface } from "../utils/gweiFormatter";
 import headerLogo from "../assets/icons/globe.svg";
 import infoIcon from "../assets/icons/info.svg";
 import Image from "next/image";
+import { NetworkSelector } from "./NetworkSelector";
+import { WagmiNetworkDataInterface } from "../interfaces/WagmiNetworkDataInterface";
 interface HeaderInterface {
   address: string | undefined;
   connectors: Connector[];
-  networkData: any;
+  networkData: WagmiNetworkDataInterface;
   currentPrice?: CurrencyInterface;
   className?: string;
-  handleConnect: (connector: Connector) => void;
-  handleDisconnect: () => void;
-  handleSwitchNetwork: (chainId: number) => void;
+  onConnect: (connector: Connector) => void;
+  onDisconnect: () => void;
+  onSwitchNetwork: (chainId: number) => void;
 }
 
 export const Header = ({
@@ -25,9 +27,9 @@ export const Header = ({
   networkData,
   currentPrice,
   className,
-  handleConnect,
-  handleDisconnect,
-  handleSwitchNetwork,
+  onConnect,
+  onDisconnect,
+  onSwitchNetwork,
 }: HeaderInterface): JSX.Element => {
   const getConnectorIcon = (connector: Connector): string | undefined => {
     switch (connector.name) {
@@ -77,7 +79,7 @@ export const Header = ({
               <Button
                 {...(!connector.ready && "disabled")}
                 key={connector.id}
-                onClick={() => handleConnect(connector)}
+                onClick={() => onConnect(connector)}
                 icon={getConnectorIcon(connector)}
               >
                 {connector.name}
@@ -87,17 +89,6 @@ export const Header = ({
           ) : (
             <span className="space-x-2">
               {/* if connected to a wallet */}
-              {handleSwitchNetwork &&
-                networkData.chains.map((x: any) =>
-                  x.id === networkData.chain?.id ? null : (
-                    <Button
-                      key={x.id}
-                      onClick={() => handleSwitchNetwork(x.id)}
-                    >
-                      Switch to {x.name}
-                    </Button>
-                  )
-                )}
 
               <Address
                 text={address}
@@ -106,7 +97,13 @@ export const Header = ({
                 className="bg-slate-800 text-slate-100 hover:bg-slate-700 relative top-1.5 "
                 chainId={networkData.chain?.id}
               />
-              <Button onClick={handleDisconnect}>Disconnect</Button>
+              {onSwitchNetwork && (
+                <NetworkSelector
+                  onSwitchNetwork={onSwitchNetwork}
+                  networkData={networkData}
+                />
+              )}
+              <Button onClick={onDisconnect}>Disconnect</Button>
             </span>
           )}
         </span>
