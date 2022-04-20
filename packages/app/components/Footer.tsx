@@ -6,7 +6,7 @@ export const Footer = () => {
       <span>
         Example project by{" "}
         <a
-          href="https://github.com/Chrykal"
+          href="https://github.com/richardhosler/continent-aquisition-example"
           target="_blank"
           rel="noopener noreferrer"
           className="hover:underline"
