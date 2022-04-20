@@ -7,7 +7,8 @@
     "hhn": "cd packages/contract && npx hardhat node",
     "hhd": "cd packages/contract && npx hardhat run --network localhost scripts/deploy.js",
     "build": "cd packages/contract && waffle && cd ../app && yarn build",
-    "deploy:rinkeby": "cd packages/contract && npx hardhat run --network rinkeby scripts/deploy.js"
+    "deploy:rinkeby": "cd packages/contract && npx hardhat run --network rinkeby scripts/deploy.js",
+    "deploy:kovan": "cd packages/contract && npx hardhat run --network kovan scripts/deploy.js"
   },
   "devDependencies": {
     "lerna": "^4.0.0"

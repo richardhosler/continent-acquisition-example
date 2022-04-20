@@ -20,6 +20,16 @@ const connectors = () => {
           : "",
       ],
     },
+    {
+      id: 42,
+      name: "kovan",
+      testnet: true,
+      rpcUrls: [
+        process.env.NEXT_PUBLIC_KOVAN_URL
+          ? process.env.NEXT_PUBLIC_KOVAN_URL
+          : "",
+      ],
+    },
   ];
 
   if (process.env.NODE_ENV === "development") {

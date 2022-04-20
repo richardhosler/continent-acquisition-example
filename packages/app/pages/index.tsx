@@ -32,6 +32,8 @@ const Home: NextPage = () => {
       switch (provider.network.chainId) {
         case 4:
           return "0xE5047b2c151076Ec2eC43Cc532DA770f00512ddE";
+        case 42:
+          return "0x8f26c90699dD54A93931F2344C6f973D3052983b";
       }
     }
     return "0x5FbDB2315678afecb367f032d93F642f64180aa3";

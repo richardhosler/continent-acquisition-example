@@ -34,6 +34,13 @@ const config: HardhatUserConfig = {
           ? [process.env.METAMASK_PRIVATE_KEY]
           : [],
     },
+    kovan: {
+      url: process.env.KOVAN_URL || "",
+      accounts:
+        process.env.METAMASK_PRIVATE_KEY !== undefined
+          ? [process.env.METAMASK_PRIVATE_KEY]
+          : [],
+    },
   },
 };
 
