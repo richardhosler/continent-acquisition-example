@@ -5,6 +5,7 @@ import {
 import { twMerge } from "tailwind-merge";
 import Davatar from "@davatar/react";
 import Link from "next/link";
+import { useMemo } from "react";
 
 interface AddressInterface extends TruncateStringInterface {
   className?: string;
@@ -18,6 +19,17 @@ export const Address = ({
   className,
   chainId,
 }: AddressInterface): JSX.Element => {
+  const getEtherscanUrl = useMemo(() => {
+    switch (chainId) {
+      case 4:
+        return `https://rinkeby.etherscan.io/address/${text}`;
+      case 42:
+        return `https://kovan.etherscan.io/address/${text}`;
+    }
+
+    return `https://etherscan.io/address/${text}`;
+  }, [chainId, text]);
+
   const classes = twMerge(
     "inline-flex rounded-sm text-slate-900 bg-slate-200 hover:bg-slate-100 w-min text-sm space-x-3 place-items-center cursor-pointer",
     className
@@ -32,11 +44,7 @@ export const Address = ({
       data-place="bottom"
       data-for="floater"
       data-effect="float"
-      href={
-        chainId === 4
-          ? `https://rinkeby.etherscan.io/address/${text}`
-          : `https://etherscan.io/address/${text}`
-      }
+      href={getEtherscanUrl}
       target="_blank"
       rel="noopener noreferrer"
     >
