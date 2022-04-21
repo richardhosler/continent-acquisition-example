@@ -15,7 +15,7 @@ export const NetworkSelector = ({
   console.log(networkData.chains);
   const [isMenuVisible, setIsMenuVisible] = useState(false);
   const classNames =
-    "flex flex-row space-x-2 place-items-center bg-slate-700 text-slate-100 px-3 py-2 w-[100px] hover:bg-slate-600";
+    "flex flex-row space-x-2 place-items-center bg-slate-700 text-slate-100 px-3 py-2 w-[100px] hover:bg-slate-600 outline-none focus:outline-none";
   return (
     <div className="inline-flex relative font-normal text-sm capitalize">
       <button
@@ -39,7 +39,7 @@ export const NetworkSelector = ({
         aria-labelledby="menu-button"
         tabIndex={-1}
         className={twMerge(
-          "absolute bg-slate-100 right-0 top-9 w-[100px] text-center text-slate-800 rounded-b-sm pb-2 drop-shadow-xl",
+          "absolute bg-slate-100 right-0 top-9 w-[100px] text-center text-slate-800 rounded-b-sm pb-2 drop-shadow-xl  outline-none focus:outline-none",
           `${isMenuVisible ? "block" : "hidden"}`
         )}
       >
