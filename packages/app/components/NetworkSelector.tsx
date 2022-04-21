@@ -14,14 +14,15 @@ export const NetworkSelector = ({
 }: NetworkSelectorInterface) => {
   console.log(networkData.chains);
   const [isMenuVisible, setIsMenuVisible] = useState(false);
-
+  const classNames =
+    "flex flex-row space-x-2 place-items-center bg-slate-700 text-slate-100 px-3 py-2 w-[100px] hover:bg-slate-600";
   return (
     <div className="inline-flex relative font-normal text-sm capitalize">
       <button
         className={
           isMenuVisible
-            ? "flex flex-row space-x-2 place-items-center bg-slate-700 text-slate-100 rounded-t-sm px-3 py-2 w-[100px] hover:bg-slate-600"
-            : "flex flex-row space-x-2 place-items-center bg-slate-700 text-slate-100 rounded-sm px-3 py-2 w-[100px] hover:bg-slate-600"
+            ? twMerge("rounded-t-sm", classNames)
+            : twMerge("rounded-sm", classNames)
         }
         id="menu-button"
         aria-expanded="true"
@@ -57,7 +58,10 @@ export const NetworkSelector = ({
                 key={key}
                 href="#"
                 className="block hover:bg-slate-300 py-2"
-                onClick={() => onSwitchNetwork(chain.id)}
+                onClick={() => {
+                  onSwitchNetwork(chain.id);
+                  setIsMenuVisible(false);
+                }}
               >
                 {chain.name}
               </a>
