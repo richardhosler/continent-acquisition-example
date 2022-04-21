@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import type { NextPage } from "next";
 import toast from "react-hot-toast";
 import ReactTooltip from "react-tooltip";
-import MapChart from "../components/Map";
+import Map from "../components/Map";
 import {
   Connector,
   useAccount,
@@ -181,7 +181,7 @@ const Home: NextPage = () => {
         currentPrice={gweiFormatter(priceData?.toString())}
       />
       <Footer />
-      <MapChart
+      <Map
         setContinent={setContinent}
         setIsOpen={setIsModalOpen}
         onTooltipChange={handleTooltipChange}

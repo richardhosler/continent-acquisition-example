@@ -18,7 +18,7 @@ interface MapChartInterface {
   setIsOpen: (isOpen: boolean) => void;
   setContinent: (continent: string) => void;
 }
-const MapChart = ({
+const Map = ({
   contractData,
   onTooltipChange,
   accountData,
@@ -30,28 +30,36 @@ const MapChart = ({
       ? contractData[getContinentId(iso)][1]
       : null;
   };
-
-  const getContinentColour = (iso: string, hover: boolean) => {
-    if (!accountData) return "#CCC";
-    if (hover) {
-      switch (getOwnerAddress(iso)) {
-        case accountData.address:
-          return colors.yellow["500"];
-        case "0x0000000000000000000000000000000000000000":
-          return colors.green["500"];
-        default:
-          return colors.green["500"];
-      }
-    } else {
-      switch (getOwnerAddress(iso)) {
-        case accountData.address:
-          return colors.yellow["600"];
-        case "0x0000000000000000000000000000000000000000":
-          return colors.green["600"];
-        default:
-          return colors.green["600"];
-      }
+  type Colour = {
+    default: string;
+    hover: string;
+  };
+  const getContinentColour = (iso: string): Colour => {
+    if (!accountData) return { default: "#CCC", hover: "#CCC" };
+    let colour = {} as Colour;
+    switch (getOwnerAddress(iso)) {
+      case accountData.address:
+        colour.default = colors.yellow[600];
+        colour.hover = colors.yellow[500];
+        break;
+      case "0x0000000000000000000000000000000000000000":
+        colour.default = colors.green["600"];
+        colour.hover = colors.green["500"];
+        break;
+      default:
+        if (
+          getOwnerAddress(iso)?.match(/^0x[a-fA-f1-9]*/) !== null &&
+          getOwnerAddress(iso) !== accountData.address &&
+          getOwnerAddress(iso) !== "0x0000000000000000000000000000000000000000"
+        ) {
+          colour.default = colors.red["600"];
+          colour.hover = colors.red["500"];
+          break;
+        }
+        colour.default = colors.green["600"];
+        colour.hover = colors.green["500"];
     }
+    return colour;
   };
   return (
     <ComposableMap
@@ -67,11 +75,11 @@ const MapChart = ({
               geography={geo}
               style={{
                 default: {
-                  fill: getContinentColour(geo.properties.ISO, false),
+                  fill: getContinentColour(geo.properties.ISO).default,
                   outline: "none",
                 },
                 hover: {
-                  fill: getContinentColour(geo.properties.ISO, true),
+                  fill: getContinentColour(geo.properties.ISO).hover,
                   outline: "none",
                 },
                 pressed: {
@@ -101,4 +109,4 @@ const MapChart = ({
   );
 };
 
-export default memo(MapChart);
+export default memo(Map);
