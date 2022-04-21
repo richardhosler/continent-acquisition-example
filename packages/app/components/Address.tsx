@@ -4,7 +4,6 @@ import {
 } from "../utils/truncateString";
 import { twMerge } from "tailwind-merge";
 import Davatar from "@davatar/react";
-import Link from "next/link";
 import { useMemo } from "react";
 
 interface AddressInterface extends TruncateStringInterface {
@@ -31,7 +30,7 @@ export const Address = ({
   }, [chainId, text]);
 
   const classes = twMerge(
-    "inline-flex rounded-sm text-slate-900 bg-slate-200 hover:bg-slate-100 w-min text-sm space-x-3 place-items-center cursor-pointer",
+    "inline-flex rounded-sm text-slate-900 w-min text-sm space-x-3 place-items-center cursor-pointer",
     className
   );
 
