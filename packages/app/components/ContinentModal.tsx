@@ -306,7 +306,6 @@ export const ContinentModal = ({
                         <span>
                           {gweiFormatter(priceData?.toString()).symbol}
                         </span>
-                        <span>Buy</span>
                       </div>
                     </Button>
                   </div>
