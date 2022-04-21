@@ -72,10 +72,10 @@ const MapChart = ({
                 },
                 hover: {
                   fill: getContinentColour(geo.properties.ISO, true),
-                  outline: "#0F0F0F",
+                  outline: "none",
                 },
                 pressed: {
-                  fill: "#E42",
+                  fill: "#CCC",
                   outline: "none",
                 },
               }}
@@ -85,10 +85,14 @@ const MapChart = ({
               onMouseLeave={() => {
                 onTooltipChange("");
               }}
-              onMouseDown={() => {
-                setContinent(geo.properties.ISO);
-                setIsOpen(true);
-              }}
+              onMouseDown={
+                accountData
+                  ? () => {
+                      setContinent(geo.properties.ISO);
+                      setIsOpen(true);
+                    }
+                  : undefined
+              }
             />
           ))
         }
