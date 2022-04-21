@@ -2,7 +2,7 @@ import Image from "next/image";
 import githubIcon from "../assets/icons/github.svg";
 export const Footer = () => {
   return (
-    <div className="flex fixed bottom-0 w-screen text-slate-500 p-4 place-content-center space-x-1">
+    <div className="flex fixed bottom-0 w-screen text-slate-500 p-4 place-content-center space-x-1 text-xs">
       <span>
         Example project by{" "}
         <a
@@ -12,8 +12,8 @@ export const Footer = () => {
           className="hover:underline"
         >
           Richard Hosler{"  "}
-          <span className="relative top-1">
-            <Image src={githubIcon} alt="Github Icon" width={20} height={20} />
+          <span className="relative top-0.5">
+            <Image src={githubIcon} alt="Github Icon" width={15} height={15} />
           </span>
         </a>
         {"  "}
