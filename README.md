@@ -2,7 +2,7 @@
 
 **Live demo:** https://continent-acquisition-example.vercel.app/
 
-_For a more fetaure rich demonstration please ensure you have [MetaMask](https://metamask.io/) installed on your browser and a small amount of Ethereum availbale on the [Rinky](https://www.rinkeby.io/)/[Kovan](https://kovan-testnet.github.io/website/) testnet (Ethereum can be sourced from a relevant test net [faucet](https://rinkebyfaucet.com/))._
+_For a more fetaure rich demonstration please ensure you have [MetaMask](https://metamask.io/) installed and a small amount of Ethereum availbale on the [Rinky](https://www.rinkeby.io/)/[Kovan](https://kovan-testnet.github.io/website/) testnet (Ethereum can be sourced from a relevant test net [faucet](https://rinkebyfaucet.com/))._
 
 ![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white) ![Solidity](https://img.shields.io/badge/Solidity-%23363636.svg?style=for-the-badge&logo=solidity&logoColor=white) ![TailwindCSS](https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white) ![Ethereum](https://img.shields.io/badge/Ethereum-3C3C3D?style=for-the-badge&logo=Ethereum&logoColor=white) ![Next JS](https://img.shields.io/badge/Next-black?style=for-the-badge&logo=next.js&logoColor=white) ![NodeJS](https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white) ![Vercel](https://img.shields.io/badge/vercel-%23000000.svg?style=for-the-badge&logo=vercel&logoColor=white)
 
