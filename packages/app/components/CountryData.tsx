@@ -1,5 +1,5 @@
 import { CountryInterface } from "../utils/restCountriesInterface";
-import { createTable, useTable } from "@tanstack/react-table";
+import { createTable, sortRowsFn, useTable } from "@tanstack/react-table";
 import { useState, useMemo } from "react";
 import Image from "next/image";
 import { numberFormatter } from "../utils/numberFormatter";
@@ -45,7 +45,11 @@ export const CountryDataView = ({
   const instance = useTable(table, {
     data,
     columns,
-    state: {},
+    state: {
+      sorting,
+    },
+    onSortingChange: () => setSorting,
+    sortRowsFn: sortRowsFn,
   });
 
   const headerClasses = twMerge(
@@ -69,8 +73,18 @@ export const CountryDataView = ({
                     {...header.getHeaderProps()}
                   >
                     {header.isPlaceholder ? null : (
-                      <div className="cursor-none select-none">
+                      <div
+                        {...(header.column.getCanSort()
+                          ? header.column.getToggleSortingProps({
+                              className: "cursor-pointer select-none",
+                            })
+                          : {})}
+                      >
                         {header.renderHeader()}
+                        {{
+                          asc: "▲",
+                          desc: "▼",
+                        }[String(header.column.getIsSorted())] ?? null}
                       </div>
                     )}
                   </th>
