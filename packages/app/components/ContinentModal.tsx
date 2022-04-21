@@ -35,7 +35,7 @@ import {
   faChevronLeft,
   faChevronRight,
 } from "@fortawesome/free-solid-svg-icons";
-import { ethers } from "ethers";
+import { convertStringToByteArray } from "../utils/convertStringToByteArray";
 
 type WagmiContractWriteType = (
   config: WagmiContractWriteConfig
@@ -132,7 +132,7 @@ export const ContinentModal = ({
     }).then(async (result) => {
       if (result.value) {
         const transaction = await onAquireContinent({
-          args: ethers.utils.formatBytes32String(iso),
+          args: convertStringToByteArray(iso),
           overrides: { from: accountData?.address, value: price },
         });
         if (transaction.data?.hash) {
@@ -157,7 +157,7 @@ export const ContinentModal = ({
     }).then(async (result) => {
       if (result.value) {
         const transaction = await onRelinquishContinent({
-          args: ethers.utils.formatBytes32String(iso),
+          args: convertStringToByteArray(iso),
         });
         if (transaction.data?.hash) {
           onWait({ hash: transaction.data.hash });
@@ -189,7 +189,7 @@ export const ContinentModal = ({
     }).then(async (result) => {
       if (result.value) {
         const transaction = await onTransferContinent({
-          args: [from, to, ethers.utils.formatBytes32String(iso)],
+          args: [from, to, convertStringToByteArray(iso)],
         });
         if (transaction.data?.hash) {
           onWait({ hash: transaction.data.hash });

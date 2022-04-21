@@ -1,15 +1,9 @@
-interface ConvertStringToByteArrayInterface {
-  text: string;
-}
-
-export const convertStringToByteArray = ({
-  text,
-}: ConvertStringToByteArrayInterface): Uint8Array => {
+export const convertStringToByteArray = (text: string): Uint8Array => {
   let result = new Uint8Array(text.length);
 
-  for (var i = 0; i < text.length; i++) {
-    result[i] = text.charCodeAt(i);
-  }
+  text.split("").forEach((character, key) => {
+    result[key] = character.charCodeAt(0);
+  });
 
   return result;
 };
