@@ -24,6 +24,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "react-loading-skeleton/dist/skeleton.css";
 import { ContinentModal } from "../components/ContinentModal";
+import Head from "next/head";
 
 const Home: NextPage = () => {
   const provider = useProvider();
@@ -163,6 +164,10 @@ const Home: NextPage = () => {
 
   return (
     <>
+      <Head>
+        <title>Continent Acquisition Example</title>
+        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+      </Head>
       <ReactTooltip backgroundColor={colors.slate[800]} id="floater">
         {tooltipContent}
       </ReactTooltip>
