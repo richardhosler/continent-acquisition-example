@@ -122,7 +122,7 @@ const Home: NextPage = () => {
   ]);
   useEffect(() => {
     if (
-      [
+      !networkData.chain?.unsupported && [
         connectError,
         networkError,
         accountError,
@@ -146,9 +146,15 @@ const Home: NextPage = () => {
         transactionError,
       ].map((error) => {
         if (error?.message) {
-          toast.error(error.message);
+          toast.error("Could not connect to contract.", { id: "contract" });
         }
       });
+    }
+    if (networkData.chain?.unsupported) {
+      toast.error(
+        "This network is not supported. Please switch to a supported network.",
+        { id: "network" }
+      );
     }
   }, [
     connectError,
@@ -160,6 +166,7 @@ const Home: NextPage = () => {
     transferContinentError,
     acquireContinentError,
     transactionError,
+    networkData.chain?.unsupported,
   ]);
 
   return (
