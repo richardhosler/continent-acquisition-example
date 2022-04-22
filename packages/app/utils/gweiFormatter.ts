@@ -3,9 +3,13 @@ export interface CurrencyInterface {
   symbol?: string;
 }
 export const gweiFormatter = (gwei: string | undefined): CurrencyInterface => {
-  if (gwei === undefined) {
+  if (gwei === undefined || gwei === "undefined") {
     return {};
-  } else if (gwei.length > 5) {
+  }
+  while (gwei.length < 18) {
+    gwei = "0" + gwei;
+  }
+  if (gwei.length > 5) {
     let eth = "0.";
     while (BigInt(gwei) !== 0n) {
       eth += gwei.charAt(0);
